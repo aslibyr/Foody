@@ -67,7 +67,7 @@ data class StepsItem(
     val number: Int? = null,
 
     @SerialName("ingredients")
-    val ingredients: List<Double?>? = null,
+    val ingredients: List<String?>? = null,
 
     @SerialName("equipment")
     val equipment: List<EquipmentItem?>? = null,
@@ -81,117 +81,119 @@ data class StepsItem(
 
 @Serializable
 data class RecipesItem(
-
-    @SerialName("instructions")
-    val instructions: String? = null,
-
-    @SerialName("sustainable")
-    val sustainable: Boolean? = null,
-
-    @SerialName("analyzedInstructions")
-    val analyzedInstructions: List<AnalyzedInstructionsItem?>? = null,
-
-    @SerialName("glutenFree")
-    val glutenFree: Boolean? = null,
-
-    @SerialName("veryPopular")
-    val veryPopular: Boolean? = null,
-
-    @SerialName("healthScore")
-    val healthScore: Int? = null,
-
+    @SerialName("id")
+    val id: Int? = null,
     @SerialName("title")
     val title: String? = null,
 
-    @SerialName("diets")
-    val diets: List<String?>? = null,
-
-    @SerialName("aggregateLikes")
-    val aggregateLikes: Int? = null,
-
-    @SerialName("creditsText")
-    val creditsText: String? = null,
-
-    @SerialName("readyInMinutes")
-    val readyInMinutes: Int? = null,
-
-    @SerialName("sourceUrl")
-    val sourceUrl: String? = null,
-
-    @SerialName("dairyFree")
-    val dairyFree: Boolean? = null,
-
-    @SerialName("servings")
-    val servings: Int? = null,
-
-    @SerialName("vegetarian")
-    val vegetarian: Boolean? = null,
-
-    @SerialName("id")
-    val id: Int? = null,
-
-    @SerialName("preparationMinutes")
-    val preparationMinutes: Double? = null,
-
-    @SerialName("imageType")
-    val imageType: String? = null,
-
-    @SerialName("summary")
-    val summary: String? = null,
-
-    @SerialName("cookingMinutes")
-    val cookingMinutes: Double? = null,
-
-    @SerialName("image")
-    val image: String? = null,
-
-    @SerialName("veryHealthy")
-    val veryHealthy: Boolean? = null,
-
-    @SerialName("vegan")
-    val vegan: Boolean? = null,
-
-    @SerialName("cheap")
-    val cheap: Boolean? = null,
-
-    @SerialName("extendedIngredients")
-    val extendedIngredients: List<ExtendedIngredientsItem?>? = null,
-
-    @SerialName("dishTypes")
-    val dishTypes: List<String?>? = null,
-
-    @SerialName("gaps")
-    val gaps: String? = null,
-
-    @SerialName("cuisines")
-    val cuisines: List<Double?>? = null,
-
-    @SerialName("lowFodmap")
-    val lowFodmap: Boolean? = null,
-
-    @SerialName("license")
-    val license: String? = null,
-
-    @SerialName("weightWatcherSmartPoints")
-    val weightWatcherSmartPoints: Int? = null,
-
-    @SerialName("occasions")
-    val occasions: List<Double?>? = null,
-
-    @SerialName("pricePerServing")
-    val pricePerServing: Double? = null,
-
-    @SerialName("spoonacularScore")
-    val spoonacularScore: Double? = null,
-
-    @SerialName("sourceName")
-    val sourceName: String? = null,
-
-    @SerialName("originalId")
-    val originalId: Double? = null,
-
-    @SerialName("spoonacularSourceUrl")
-    val spoonacularSourceUrl: String? = null
+//    @SerialName("instructions")
+//    val instructions: String? = null,
+//
+//    @SerialName("sustainable")
+//    val sustainable: Boolean? = null,
+//
+//    @SerialName("analyzedInstructions")
+//    val analyzedInstructions: List<AnalyzedInstructionsItem?>? = null,
+//
+//    @SerialName("glutenFree")
+//    val glutenFree: Boolean? = null,
+//
+//    @SerialName("veryPopular")
+//    val veryPopular: Boolean? = null,
+//
+//    @SerialName("healthScore")
+//    val healthScore: Int? = null,
+//
+//
+//
+//    @SerialName("diets")
+//    val diets: List<String?>? = null,
+//
+//    @SerialName("aggregateLikes")
+//    val aggregateLikes: Int? = null,
+//
+//    @SerialName("creditsText")
+//    val creditsText: String? = null,
+//
+//    @SerialName("readyInMinutes")
+//    val readyInMinutes: Int? = null,
+//
+//    @SerialName("sourceUrl")
+//    val sourceUrl: String? = null,
+//
+//    @SerialName("dairyFree")
+//    val dairyFree: Boolean? = null,
+//
+//    @SerialName("servings")
+//    val servings: Int? = null,
+//
+//    @SerialName("vegetarian")
+//    val vegetarian: Boolean? = null,
+//
+//
+//
+//    @SerialName("preparationMinutes")
+//    val preparationMinutes: Double? = null,
+//
+//    @SerialName("imageType")
+//    val imageType: String? = null,
+//
+//    @SerialName("summary")
+//    val summary: String? = null,
+//
+//    @SerialName("cookingMinutes")
+//    val cookingMinutes: Double? = null,
+//
+//    @SerialName("image")
+//    val image: String? = null,
+//
+//    @SerialName("veryHealthy")
+//    val veryHealthy: Boolean? = null,
+//
+//    @SerialName("vegan")
+//    val vegan: Boolean? = null,
+//
+//    @SerialName("cheap")
+//    val cheap: Boolean? = null,
+//
+//    @SerialName("extendedIngredients")
+//    val extendedIngredients: List<ExtendedIngredientsItem?>? = null,
+//
+//    @SerialName("dishTypes")
+//    val dishTypes: List<String?>? = null,
+//
+//    @SerialName("gaps")
+//    val gaps: String? = null,
+//
+//    @SerialName("cuisines")
+//    val cuisines: List<String?>? = null,
+//
+//    @SerialName("lowFodmap")
+//    val lowFodmap: Boolean? = null,
+//
+//    @SerialName("license")
+//    val license: String? = null,
+//
+//    @SerialName("weightWatcherSmartPoints")
+//    val weightWatcherSmartPoints: Int? = null,
+//
+//    @SerialName("occasions")
+//    val occasions: List<String?>? = null,
+//
+//    @SerialName("pricePerServing")
+//    val pricePerServing: Double? = null,
+//
+//    @SerialName("spoonacularScore")
+//    val spoonacularScore: Double? = null,
+//
+//    @SerialName("sourceName")
+//    val sourceName: String? = null,
+//
+//    @SerialName("originalId")
+//    val originalId: Double? = null,
+//
+//    @SerialName("spoonacularSourceUrl")
+//    val spoonacularSourceUrl: String? = null
 )
 
 @Serializable
