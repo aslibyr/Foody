@@ -22,3 +22,4 @@ dependencyResolutionManagement {
 rootProject.name = "Foody"
 include(":app")
 include(":network")
+include(":data")

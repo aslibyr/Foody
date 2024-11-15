@@ -71,5 +71,5 @@ dependencies {
     implementation(libs.koin.androidx.compose)
     implementation(libs.navigation.compose)
 
-    implementation(project(":network"))
+    implementation(project(":data"))
 }

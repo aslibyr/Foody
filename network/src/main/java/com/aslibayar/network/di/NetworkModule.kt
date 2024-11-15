@@ -39,7 +39,6 @@ val provideNetworkModule = module {
                         ignoreUnknownKeys = true
                     }
                 )
-
             }
         }
     }
