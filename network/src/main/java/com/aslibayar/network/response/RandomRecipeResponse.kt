@@ -144,8 +144,8 @@ data class RecipesItem(
 //    @SerialName("cookingMinutes")
 //    val cookingMinutes: Double? = null,
 //
-//    @SerialName("image")
-//    val image: String? = null,
+    @SerialName("image")
+    val image: String? = null,
 //
 //    @SerialName("veryHealthy")
 //    val veryHealthy: Boolean? = null,

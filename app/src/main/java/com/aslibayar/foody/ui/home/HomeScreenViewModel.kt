@@ -9,7 +9,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class HomeScreenViewModel(private val repository: RecipeRepository) : ViewModel() {
+class HomeScreenViewModel(
+    private val repository: RecipeRepository,
+) : ViewModel() {
 
     private val _recipeList =
         MutableStateFlow<BaseUIModel<List<RecipeUIModel?>>>(BaseUIModel.Loading)

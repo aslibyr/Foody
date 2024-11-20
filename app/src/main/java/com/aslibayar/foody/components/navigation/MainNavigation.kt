@@ -10,8 +10,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.aslibayar.foody.HomeScreenRoute
+import com.aslibayar.foody.RecipeDetailRoute
 import com.aslibayar.foody.SecondRoute
 import com.aslibayar.foody.ui.SecondScreen
+import com.aslibayar.foody.ui.detail.RecipeDetailScreen
 import com.aslibayar.foody.ui.home.HomeScreen
 
 @Composable
@@ -51,11 +53,20 @@ fun MainNavigation(
 
     ) {
         composable<HomeScreenRoute> {
-            HomeScreen(modifier = modifier)
+            HomeScreen(modifier = modifier, openRecipeDetailScreen = {
+                val route = RecipeDetailRoute(it)
+                navController.navigate(route)
+            }
+            )
         }
+
 
         composable<SecondRoute> {
             SecondScreen(modifier = modifier)
+        }
+
+        composable<RecipeDetailRoute> {
+            RecipeDetailScreen(modifier = modifier)
         }
     }
 }
