@@ -17,17 +17,12 @@ android {
         buildConfigField(
             "String",
             "BASE_URL",
-            "\"https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/\""
+            "\"https://api.spoonacular.com/\""
         )
         buildConfigField(
             "String",
             "API_KEY",
-            "\"ad2fdc4e74msh7f279bec0a2d7afp191269jsn2640e42648ea\""
-        )
-        buildConfigField(
-            "String",
-            "API_HOST",
-            "\"spoonacular-recipe-food-nutrition-v1.p.rapidapi.com\""
+            "\"4e09194ced60421496498ebf0655b7e7\""
         )
     }
 
