@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -18,7 +19,7 @@ fun RecipeDetailScreen(
 
 
     Column(modifier = modifier.fillMaxSize()) {
-        uiState.recipe.title.let { Text(it ?: "") }
-
+        uiState.recipe.title?.let { Text(it) }
+        uiState.recipe.image?.let { AsyncImage(it, "") }
     }
 }
