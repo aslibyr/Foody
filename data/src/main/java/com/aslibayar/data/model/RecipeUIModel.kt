@@ -12,4 +12,11 @@ data class RecipeDetailUIModel(
     val image: String? = null,
     val summary: String? = null,
     val instructions: String? = null,
+    val extendedIngredients: List<RecipeIngredientsUIModel> = emptyList()
+)
+
+data class RecipeIngredientsUIModel(
+    val ingredientId: Int = 0,
+    val image: String? = null,
+    val name: String? = null
 )

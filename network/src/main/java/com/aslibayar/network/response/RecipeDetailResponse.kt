@@ -79,7 +79,7 @@ data class RecipeDetailResponse(
     val cheap: Boolean? = null,
 
     @SerialName("extendedIngredients")
-    val extendedIngredients: List<ExtendedIngredientsItem?>? = null,
+    val extendedIngredients: List<ExtendedIngredientsItem>? = null,
 
     @SerialName("dishTypes")
     val dishTypes: List<String?>? = null,
