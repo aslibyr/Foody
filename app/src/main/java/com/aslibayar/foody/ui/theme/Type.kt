@@ -13,46 +13,47 @@ class Type {
         val dosisRegular = Font(R.font.dosis_regular).toFontFamily()
         val dosisMedium = Font(R.font.dosis_medium).toFontFamily()
         val dosisBold = Font(R.font.dosis_semibold).toFontFamily()
+        val dosisExtraBold = Font(R.font.dosis_extrabold).toFontFamily()
     }
 }
 
 class CustomTextStyle {
     companion object {
         val regularBlackSmall = TextStyle(
-            fontSize = 11.sp,
+            fontSize = 12.sp,
             fontFamily = Type.dosisRegular,
 //            color = primaryBlack,
         )
         val regularBlackMedium = TextStyle(
-            fontSize = 13.sp,
+            fontSize = 14.sp,
             fontFamily = Type.dosisMedium,
 //            color = primaryBlack,
         )
         val regularBlackLarge = TextStyle(
-            fontSize = 14.sp,
+            fontSize = 16.sp,
             fontFamily = Type.dosisBold,
 //            color = primaryBlack,
         )
 
         val regularBlackXLarge = TextStyle(
-            fontSize = 16.sp,
-            fontFamily = Type.dosisBold,
+            fontSize = 18.sp,
+            fontFamily = Type.dosisExtraBold,
 //            color = primaryBlack,
         )
-        val regularPurpleSmall = TextStyle(
+        val regularOrangeSmall = TextStyle(
             fontSize = 11.sp,
             fontFamily = Type.dosisRegular,
-//            color = primaryPurpleColor,
+//            color = primaryOrangeColor,
         )
-        val regularPurpleMedium = TextStyle(
+        val regularOrangeMedium = TextStyle(
             fontSize = 12.sp,
             fontFamily = Type.dosisRegular,
-//            color = primaryPurpleColor,
+//            color = primaryOrangeColor,
         )
-        val regularPurpleLarge = TextStyle(
+        val regularOrangeLarge = TextStyle(
             fontSize = 14.sp,
             fontFamily = Type.dosisRegular,
-//            color = primaryPurpleColor,
+//            color = primaryOrangeColor,
         )
         val regularLightGreySmall = TextStyle(
             fontSize = 11.sp,

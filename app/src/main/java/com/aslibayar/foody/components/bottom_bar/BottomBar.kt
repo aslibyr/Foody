@@ -18,7 +18,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -29,6 +28,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.alican.multimodulemovies.components.bottom_bar.BottomBarRoute
 import com.aslibayar.foody.HomeScreenRoute
 import com.aslibayar.foody.SecondRoute
+import com.aslibayar.foody.ui.theme.Orange
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
@@ -51,8 +51,7 @@ fun BottomBar(
             route = SecondRoute,
             icon = Icons.Filled.Search
         ),
-
-        )
+    )
 
     Column(modifier = Modifier.fillMaxWidth()) {
         AnimatedVisibility(visible = isBottomBarVisible) {
@@ -83,8 +82,8 @@ fun BottomBar(
                         },
                         interactionSource = NoRippleInteractionSource,
                         colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = Color.Red,
-                            selectedTextColor = Color.Red,
+                            selectedIconColor = Orange,
+                            selectedTextColor = Orange,
                             unselectedIconColor = MaterialTheme.colorScheme.onBackground,
                             unselectedTextColor = MaterialTheme.colorScheme.onBackground,
                             indicatorColor = MaterialTheme.colorScheme.background

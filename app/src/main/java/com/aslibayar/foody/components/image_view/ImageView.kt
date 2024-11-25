@@ -19,6 +19,7 @@ import coil.request.CachePolicy
 import coil.request.ImageRequest
 import coil.util.DebugLogger
 import com.aslibayar.foody.R
+import com.aslibayar.foody.ui.theme.Orange
 
 @Composable
 fun CustomImageView(
@@ -50,7 +51,7 @@ fun CustomImageView(
                     .background(Color.White),
                 contentAlignment = Alignment.Center
             ) {
-                CircularProgressIndicator(trackColor = Color.Magenta)
+                CircularProgressIndicator(color = Orange)
             }
         },
         modifier = modifier,
@@ -66,5 +67,4 @@ fun CustomImageView(
         },
         contentScale = contentScale
     )
-
 }

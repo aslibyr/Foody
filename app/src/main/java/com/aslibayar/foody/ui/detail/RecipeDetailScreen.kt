@@ -14,10 +14,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -29,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -38,8 +37,10 @@ import com.aslibayar.data.model.RecipeDetailUIModel
 import com.aslibayar.data.model.RecipeIngredientsUIModel
 import com.aslibayar.foody.components.html_text.HtmlText
 import com.aslibayar.foody.components.image_view.CustomImageView
+import com.aslibayar.foody.components.loading.CustomLoading
 import com.aslibayar.foody.noRippleClick
 import com.aslibayar.foody.ui.theme.CustomTextStyle
+import com.aslibayar.foody.ui.theme.Orange
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -52,9 +53,7 @@ fun RecipeDetailScreen(
         when (recipe) {
             is BaseUIModel.Error -> {}
             BaseUIModel.Loading -> {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator()
-                }
+                CustomLoading()
             }
 
             is BaseUIModel.Success -> {
@@ -90,45 +89,60 @@ fun StatelessRecipeDetail(modifier: Modifier = Modifier, recipe: RecipeDetailUIM
                 .clip(RoundedCornerShape(topStart = 60.dp, topEnd = 60.dp))
                 .background(Color.White),
         ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(color = Orange),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = recipe.title,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp, horizontal = 32.dp),
+                    color = Color.White,
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    style = CustomTextStyle.regularBlackXLarge
+                )
+            }
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 10.dp),
+                    .padding(horizontal = 10.dp)
+                    .padding(top = 10.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                recipe.title.let { title ->
-                    Text(
-                        text = if (title.length > 35) title.take(35) + "..." else title,
-                        modifier = Modifier.padding(8.dp),
-                        fontWeight = FontWeight.Bold,
-                        maxLines = 1,
-                        style = CustomTextStyle.regularBlackXLarge
-                    )
-                }
                 HtmlText(
                     html = recipe.summary,
                     textStyle = CustomTextStyle.regularBlackMedium
                 )
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Start
-                ) {
-                    Text(
-                        text =
-                        "Instructions",
-                        modifier = Modifier.padding(8.dp),
-                        fontWeight = FontWeight.Bold,
-                        style = CustomTextStyle.regularBlackMedium
+
+                if (recipe.instructions.isNotEmpty()) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Start
+                    ) {
+                        Text(
+                            text = "Instructions",
+                            color = Orange,
+                            modifier = Modifier.padding(vertical = 8.dp),
+                            style = CustomTextStyle.regularBlackLarge
+                        )
+                    }
+                    HtmlText(
+                        html = recipe.instructions,
+                        textStyle = CustomTextStyle.regularBlackMedium
                     )
                 }
-                HtmlText(
-                    html = recipe.instructions,
-                    textStyle = CustomTextStyle.regularBlackMedium
-                )
+
             }
-            FlowRow(modifier = Modifier) {
+            FlowRow(modifier = Modifier.padding(vertical = 16.dp)) {
                 recipe.extendedIngredients.forEach {
                     IngredientsItem(item = it)
                 }
@@ -140,28 +154,31 @@ fun StatelessRecipeDetail(modifier: Modifier = Modifier, recipe: RecipeDetailUIM
 
 @Composable
 fun IngredientsItem(modifier: Modifier = Modifier, item: RecipeIngredientsUIModel) {
-    Column(
-        modifier
-            .fillMaxWidth(0.33f)
-            .padding(4.dp)
-            .noRippleClick {
+    if (item.name.isNotEmpty() || (item.image.isNotEmpty())) {
+        Column(
+            modifier
+                .fillMaxWidth(0.33f)
+                .padding(4.dp)
+                .noRippleClick {
 
-            },
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        CustomImageView(
-            imageUrl = item.image,
-            modifier = Modifier
-                .size(80.dp)
-                .clip(CircleShape),
-            contentScale = ContentScale.Crop,
-        )
-        Text(
-            modifier = Modifier.padding(8.dp),
-            text = item.name,
-            fontSize = 12.sp,
-            textAlign = TextAlign.Center
-        )
+                },
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            CustomImageView(
+                imageUrl = item.image,
+                modifier = Modifier
+                    .size(80.dp)
+                    .clip(RoundedCornerShape(8.dp)),
+                contentScale = ContentScale.Fit,
+            )
+            Text(
+                modifier = Modifier.padding(8.dp),
+                text = item.name.lowercase().split(" ")
+                    .joinToString(" ") { it.replaceFirstChar { it.uppercase() } },
+                fontSize = 12.sp,
+                textAlign = TextAlign.Center,
+            )
+        }
     }
 }

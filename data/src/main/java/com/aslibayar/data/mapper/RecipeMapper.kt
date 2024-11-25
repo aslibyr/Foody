@@ -34,7 +34,7 @@ fun RecipeDetailResponse.toUIModel(): RecipeDetailUIModel {
 fun ExtendedIngredientsItem.toUIModel(): RecipeIngredientsUIModel {
     return RecipeIngredientsUIModel(
         ingredientId = this.id ?: 0,
-        image = BuildConfig.BASE_IMAGE_URL + this.image,
+        image = if (this.image.isNullOrEmpty()) "" else BuildConfig.BASE_IMAGE_URL + this.image,
         name = this.nameClean ?: ""
     )
 }

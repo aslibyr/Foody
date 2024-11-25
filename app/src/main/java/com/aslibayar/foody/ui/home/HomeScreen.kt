@@ -17,6 +17,7 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
@@ -24,7 +25,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.compose.AsyncImage
+import com.aslibayar.foody.components.image_view.CustomImageView
+import com.aslibayar.foody.components.loading.CustomLoading
 import com.aslibayar.foody.ui.theme.CustomTextStyle
 import org.koin.androidx.compose.koinViewModel
 
@@ -34,7 +36,11 @@ fun HomeScreen(
     modifier: Modifier,
     openRecipeDetailScreen: (recipeId: Int) -> Unit
 ) {
-    val recipeList = viewModel.recipeList.collectAsStateWithLifecycle()
+    val recipeList by viewModel.recipeList.collectAsStateWithLifecycle()
+
+    if (recipeList.isLoading) {
+        CustomLoading()
+    }
 
     Column(
         modifier = Modifier
@@ -46,7 +52,7 @@ fun HomeScreen(
                 .padding(horizontal = 10.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            items(recipeList.value.recipes) {
+            items(recipeList.recipes) {
                 it?.let {
                     ListItem(
                         modifier = Modifier
@@ -69,8 +75,8 @@ fun HomeScreen(
                                     .shadow(elevation = 10.dp, shape = RoundedCornerShape(8.dp))
                                     .clip(RoundedCornerShape(8.dp))
                             ) {
-                                AsyncImage(
-                                    model = it.image, contentDescription = "", modifier = Modifier
+                                CustomImageView(
+                                    imageUrl = it.image, modifier = Modifier
                                         .height(80.dp)
                                         .width(100.dp), contentScale = ContentScale.Crop
                                 )
