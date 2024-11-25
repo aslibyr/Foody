@@ -1,6 +1,7 @@
 package com.aslibayar.data.mapper
 
 import RecipesItem
+import com.aslibayar.data.BuildConfig
 import com.aslibayar.data.model.RecipeDetailUIModel
 import com.aslibayar.data.model.RecipeIngredientsUIModel
 import com.aslibayar.data.model.RecipeUIModel
@@ -33,7 +34,7 @@ fun RecipeDetailResponse.toUIModel(): RecipeDetailUIModel {
 fun ExtendedIngredientsItem.toUIModel(): RecipeIngredientsUIModel {
     return RecipeIngredientsUIModel(
         ingredientId = this.id ?: 0,
-        image = this.image ?: "",
-        name = this.name ?: ""
+        image = BuildConfig.BASE_IMAGE_URL + this.image,
+        name = this.nameClean ?: ""
     )
 }

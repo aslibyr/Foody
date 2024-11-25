@@ -7,16 +7,16 @@ data class RecipeUIModel(
 )
 
 data class RecipeDetailUIModel(
-    val id: Int = 0,
-    val title: String? = null,
-    val image: String? = null,
-    val summary: String? = null,
-    val instructions: String? = null,
+    val id: Int,
+    val title: String,
+    val image: String,
+    val summary: String,
+    val instructions: String,
     val extendedIngredients: List<RecipeIngredientsUIModel> = emptyList()
 )
 
 data class RecipeIngredientsUIModel(
-    val ingredientId: Int = 0,
-    val image: String? = null,
-    val name: String? = null
+    val ingredientId: Int,
+    val image: String,
+    val name: String
 )

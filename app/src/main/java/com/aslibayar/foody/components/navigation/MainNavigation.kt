@@ -5,7 +5,6 @@ import androidx.compose.animation.core.EaseIn
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -21,7 +20,6 @@ fun MainNavigation(
     navController: NavHostController,
     modifier: Modifier,
 ) {
-    val context = LocalContext.current
     NavHost(
         navController = navController,
         startDestination = HomeScreenRoute,
@@ -66,7 +64,7 @@ fun MainNavigation(
         }
 
         composable<RecipeDetailRoute> {
-            RecipeDetailScreen(modifier = modifier)
+            RecipeDetailScreen()
         }
     }
 }
