@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.aslibayar.data.model.BaseUIModel
+import com.aslibayar.data.model.RecipeDetailUIModel
 import com.aslibayar.data.repository.RecipeRepository
 import com.aslibayar.foody.RecipeDetailRoute
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,10 +19,11 @@ class RecipeDetailViewModel(
 ) : ViewModel() {
     private val recipeId = savedStateHandle.toRoute<RecipeDetailRoute>().recipeId
 
-    private val _uiState = MutableStateFlow(RecipeDetailUIStateModel())
-    val uiState = _uiState.stateIn(
+    private val _recipeDetail =
+        MutableStateFlow<BaseUIModel<RecipeDetailUIModel>>(BaseUIModel.Loading)
+    val recipe = _recipeDetail.stateIn(
         viewModelScope, SharingStarted.WhileSubscribed(),
-        RecipeDetailUIStateModel()
+        BaseUIModel.Loading
     )
 
     init {
@@ -31,14 +33,7 @@ class RecipeDetailViewModel(
     private fun getRecipeDetail(recipeId: Int) {
         viewModelScope.launch {
             repository.getRecipeDetail(recipeId).collect {
-                _uiState.value = _uiState.value.copy(
-                    isLoading = it is BaseUIModel.Loading
-                )
-                if (it is BaseUIModel.Success) {
-                    _uiState.value = _uiState.value.copy(
-                        recipe = it.data
-                    )
-                }
+                _recipeDetail.emit(it)
             }
         }
     }

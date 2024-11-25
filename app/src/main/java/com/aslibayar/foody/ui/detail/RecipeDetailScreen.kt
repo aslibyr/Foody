@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -25,22 +26,45 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import com.aslibayar.data.model.BaseUIModel
+import com.aslibayar.data.model.RecipeDetailUIModel
 import com.aslibayar.foody.components.html_text.HtmlText
 import com.aslibayar.foody.ui.theme.CustomTextStyle
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun RecipeDetailScreen(
-    modifier: Modifier = Modifier, viewModel: RecipeDetailViewModel = koinViewModel()
+    viewModel: RecipeDetailViewModel = koinViewModel()
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val recipe by viewModel.recipe.collectAsStateWithLifecycle()
 
+    Column(modifier = Modifier.fillMaxSize()) {
+        when (recipe) {
+            is BaseUIModel.Error -> {}
+            BaseUIModel.Loading -> {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
+                }
+            }
+
+            is BaseUIModel.Success -> {
+                val recipeData = (recipe as BaseUIModel.Success<RecipeDetailUIModel>).data
+                StatelessRecipeDetail(recipe = recipeData)
+            }
+        }
+    }
+
+
+}
+
+@Composable
+fun StatelessRecipeDetail(modifier: Modifier = Modifier, recipe: RecipeDetailUIModel) {
     Box(
         modifier = Modifier
             .fillMaxSize()
     ) {
         AsyncImage(
-            model = uiState.recipe.image,
+            model = recipe.image,
             contentDescription = null,
             modifier = Modifier.fillMaxWidth(),
         )
@@ -64,7 +88,7 @@ fun RecipeDetailScreen(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                uiState.recipe.title?.let { title ->
+                recipe.title?.let { title ->
                     Text(
                         text = if (title.length > 35) title.take(35) + "..." else title,
                         modifier = Modifier.padding(8.dp),
@@ -73,7 +97,7 @@ fun RecipeDetailScreen(
                         style = CustomTextStyle.regularBlackXLarge
                     )
                 }
-                uiState.recipe.summary?.let {
+                recipe.summary?.let {
                     HtmlText(
                         html = it,
                         textStyle = CustomTextStyle.regularBlackMedium
@@ -92,7 +116,7 @@ fun RecipeDetailScreen(
                         style = CustomTextStyle.regularBlackMedium
                     )
                 }
-                uiState.recipe.instructions?.let {
+                recipe.instructions?.let {
                     HtmlText(
                         html = it,
                         textStyle = CustomTextStyle.regularBlackMedium
