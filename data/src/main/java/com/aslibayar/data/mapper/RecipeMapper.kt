@@ -27,7 +27,11 @@ fun RecipeDetailResponse.toUIModel(): RecipeDetailUIModel {
         image = this.image ?: "",
         summary = this.summary ?: "",
         instructions = this.instructions ?: "",
-        extendedIngredients = extendedIngredients
+        extendedIngredients = extendedIngredients,
+        sourceUrl = this.sourceUrl ?: "",
+        diets = this.diets ?: emptyList(),
+        time = (this.readyInMinutes.toString() + "min."),
+        servings = this.servings.toString()
     )
 }
 

@@ -28,7 +28,7 @@ data class RecipeDetailResponse(
     val title: String? = null,
 
     @SerialName("diets")
-    val diets: List<String?>? = null,
+    val diets: List<String>? = null,
 
     @SerialName("aggregateLikes")
     val aggregateLikes: Int? = null,

@@ -40,6 +40,7 @@ import com.aslibayar.foody.components.image_view.CustomImageView
 import com.aslibayar.foody.components.loading.CustomLoading
 import com.aslibayar.foody.noRippleClick
 import com.aslibayar.foody.ui.theme.CustomTextStyle
+import com.aslibayar.foody.ui.theme.LightOrange
 import com.aslibayar.foody.ui.theme.Orange
 import org.koin.androidx.compose.koinViewModel
 
@@ -92,6 +93,7 @@ fun StatelessRecipeDetail(modifier: Modifier = Modifier, recipe: RecipeDetailUIM
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .height(60.dp)
                     .background(color = Orange),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
@@ -117,10 +119,54 @@ fun StatelessRecipeDetail(modifier: Modifier = Modifier, recipe: RecipeDetailUIM
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                if (recipe.time.isNotEmpty() && recipe.servings.isNotEmpty()) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        if (recipe.time.isNotEmpty()) {
+                            Text(
+                                "Preperation time: " + recipe.time,
+                                style = CustomTextStyle.regularBlackSmall
+                            )
+                        }
+                        if (recipe.servings.isNotEmpty()) {
+                            Text(
+                                "Servings: " + recipe.servings.toString(),
+                                style = CustomTextStyle.regularBlackSmall
+                            )
+                        }
+                    }
+                }
                 HtmlText(
                     html = recipe.summary,
                     textStyle = CustomTextStyle.regularBlackMedium
                 )
+                if (recipe.diets.isNotEmpty()) {
+                    FlowRow(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        recipe.diets.forEach {
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(20.dp))
+                                    .background(LightOrange),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = it.lowercase().split(" ")
+                                        .joinToString(" ") { word -> word.replaceFirstChar { it.uppercase() } },
+                                    modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp),
+                                    style = CustomTextStyle.regularBlackMedium
+                                )
+                            }
+                        }
+                    }
+                }
 
                 if (recipe.instructions.isNotEmpty()) {
                     Row(
@@ -143,7 +189,7 @@ fun StatelessRecipeDetail(modifier: Modifier = Modifier, recipe: RecipeDetailUIM
 
             }
             FlowRow(modifier = Modifier.padding(vertical = 16.dp)) {
-                recipe.extendedIngredients.forEach {
+                recipe.extendedIngredients.distinctBy { it.name }.forEach {
                     IngredientsItem(item = it)
                 }
             }
@@ -175,7 +221,7 @@ fun IngredientsItem(modifier: Modifier = Modifier, item: RecipeIngredientsUIMode
             Text(
                 modifier = Modifier.padding(8.dp),
                 text = item.name.lowercase().split(" ")
-                    .joinToString(" ") { it.replaceFirstChar { it.uppercase() } },
+                    .joinToString(" ") { word -> word.replaceFirstChar { it.uppercase() } },
                 fontSize = 12.sp,
                 textAlign = TextAlign.Center,
             )
