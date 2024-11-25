@@ -25,6 +25,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import com.aslibayar.foody.ui.theme.CustomTextStyle
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -52,14 +53,20 @@ fun HomeScreen(
                             .clickable {
                                 openRecipeDetailScreen(it.id)
                             }
-                            .shadow(elevation = 10.dp)
+                            .shadow(elevation = 10.dp, shape = RoundedCornerShape(12.dp))
                             .clip(RoundedCornerShape(12.dp))
                             .fillMaxWidth(),
-                        headlineContent = { Text(it.title) },
+                        headlineContent = {
+                            Text(
+                                it.title,
+                                style = CustomTextStyle.regularBlackLarge
+                            )
+                        },
                         leadingContent = {
                             Box(
                                 modifier = Modifier
                                     .wrapContentSize()
+                                    .shadow(elevation = 10.dp, shape = RoundedCornerShape(8.dp))
                                     .clip(RoundedCornerShape(8.dp))
                             ) {
                                 AsyncImage(

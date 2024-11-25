@@ -19,12 +19,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.aslibayar.foody.components.html_text.HtmlText
+import com.aslibayar.foody.ui.theme.CustomTextStyle
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -36,9 +38,7 @@ fun RecipeDetailScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Red)
     ) {
-
         AsyncImage(
             model = uiState.recipe.image,
             contentDescription = null,
@@ -50,41 +50,56 @@ fun RecipeDetailScreen(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .padding(top = 160.dp)
-                .padding(horizontal = 10.dp)
+                .shadow(
+                    elevation = 10.dp,
+                    shape = RoundedCornerShape(topStart = 60.dp, topEnd = 60.dp)
+                )
                 .clip(RoundedCornerShape(topStart = 60.dp, topEnd = 60.dp))
                 .background(Color.White),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            uiState.recipe.title?.let { title ->
-                Text(
-                    text = if (title.length > 35) title.take(35) + "..." else title, // Karakter sınırı ve üç nokta ekleme
-                    modifier = Modifier.padding(8.dp),
-                    fontWeight = FontWeight.Bold,
-                    maxLines = 1
-                )
-            }
-            uiState.recipe.summary?.let { HtmlText(html = it, modifier = Modifier.padding(16.dp)) }
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Start
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 10.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text =
-                    "Instructions",
-                    modifier = Modifier.padding(8.dp),
-                    fontWeight = FontWeight.Bold,
-
+                uiState.recipe.title?.let { title ->
+                    Text(
+                        text = if (title.length > 35) title.take(35) + "..." else title,
+                        modifier = Modifier.padding(8.dp),
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 1,
+                        style = CustomTextStyle.regularBlackXLarge
                     )
+                }
+                uiState.recipe.summary?.let {
+                    HtmlText(
+                        html = it,
+                        textStyle = CustomTextStyle.regularBlackMedium
+                    )
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    Text(
+                        text =
+                        "Instructions",
+                        modifier = Modifier.padding(8.dp),
+                        fontWeight = FontWeight.Bold,
+                        style = CustomTextStyle.regularBlackMedium
+                    )
+                }
+                uiState.recipe.instructions?.let {
+                    HtmlText(
+                        html = it,
+                        textStyle = CustomTextStyle.regularBlackMedium
+                    )
+                }
+                Spacer(modifier = Modifier.height(20.dp))
             }
-            uiState.recipe.instructions?.let {
-                HtmlText(
-                    html = it,
-                    modifier = Modifier.padding(8.dp)
-                )
-            }
-            Spacer(modifier = Modifier.height(10.dp))
         }
     }
 }
