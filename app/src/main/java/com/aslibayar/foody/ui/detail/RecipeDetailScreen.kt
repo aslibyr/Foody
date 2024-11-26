@@ -133,7 +133,7 @@ fun StatelessRecipeDetail(modifier: Modifier = Modifier, recipe: RecipeDetailUIM
                         }
                         if (recipe.servings.isNotEmpty()) {
                             Text(
-                                "Servings: " + recipe.servings.toString(),
+                                "Servings: " + recipe.servings,
                                 style = CustomTextStyle.regularBlackSmall
                             )
                         }
@@ -177,7 +177,6 @@ fun StatelessRecipeDetail(modifier: Modifier = Modifier, recipe: RecipeDetailUIM
                         Text(
                             text = "Instructions",
                             color = Orange,
-                            modifier = Modifier.padding(vertical = 8.dp),
                             style = CustomTextStyle.regularBlackLarge
                         )
                     }
