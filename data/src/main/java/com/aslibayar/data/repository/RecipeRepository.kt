@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.flow
 
 class RecipeRepository(private val recipesApiService: RecipesApiService) {
 
-    suspend fun getRandomRecipes(): Flow<BaseUIModel<List<RecipeUIModel?>>> {
+    fun getRandomRecipes(): Flow<BaseUIModel<List<RecipeUIModel?>>> {
         return flow {
             emit(BaseUIModel.Loading)
             when (val response = recipesApiService.getRecipeList()) {
@@ -26,7 +26,7 @@ class RecipeRepository(private val recipesApiService: RecipesApiService) {
         }
     }
 
-    suspend fun getRecipeDetail(recipeId: Int): Flow<BaseUIModel<RecipeDetailUIModel>> {
+    fun getRecipeDetail(recipeId: Int): Flow<BaseUIModel<RecipeDetailUIModel>> {
         return flow {
             emit(BaseUIModel.Loading)
             when (val response = recipesApiService.getRecipeDetail(recipeId)) {
@@ -39,7 +39,7 @@ class RecipeRepository(private val recipesApiService: RecipesApiService) {
         }
     }
 
-    suspend fun searchRecipe(query: String): Flow<BaseUIModel<List<RecipeUIModel?>>> {
+    fun searchRecipe(query: String): Flow<BaseUIModel<List<RecipeUIModel?>>> {
         return flow {
             emit(BaseUIModel.Loading)
             when (val response = recipesApiService.searchRecipe(query)) {
@@ -51,7 +51,6 @@ class RecipeRepository(private val recipesApiService: RecipesApiService) {
                     emit(BaseUIModel.Success(result))
                 }
             }
-
         }
     }
 }

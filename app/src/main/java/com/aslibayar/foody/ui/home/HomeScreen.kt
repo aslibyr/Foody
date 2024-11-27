@@ -1,5 +1,6 @@
 package com.aslibayar.foody.ui.home
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,7 +34,6 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun HomeScreen(
     viewModel: HomeScreenViewModel = koinViewModel(),
-    modifier: Modifier,
     openRecipeDetailScreen: (recipeId: Int) -> Unit
 ) {
     val recipeList by viewModel.recipeList.collectAsStateWithLifecycle()
@@ -45,6 +45,7 @@ fun HomeScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(Color.White)
     ) {
         LazyColumn(
             Modifier

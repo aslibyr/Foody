@@ -24,6 +24,11 @@ android {
             "API_KEY",
             "\"4e09194ced60421496498ebf0655b7e7\""
         )
+        buildConfigField(
+            "String",
+            "BASE_SEARCH_URL",
+            "\"https://img.spoonacular.com/recipes/complexSearch?query=\""
+        )
     }
 
     buildTypes {

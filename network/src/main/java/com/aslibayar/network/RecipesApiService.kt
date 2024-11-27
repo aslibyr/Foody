@@ -12,11 +12,11 @@ class RecipesApiService(
 
     override suspend fun getRecipeList(): NetworkResult<RandomRecipeResponse> =
         safeApiCall<RandomRecipeResponse>(client) {
-                url {
-                    appendPathSegments("recipes", "random")
-                    parameters.append("number", 10.toString())
-                    parameters.append("apiKey", BuildConfig.API_KEY)
-                }
+            url {
+                appendPathSegments("recipes", "random")
+                parameters.append("number", 10.toString())
+                parameters.append("apiKey", BuildConfig.API_KEY)
+            }
             method = HttpMethod.Get
         }
 
@@ -32,7 +32,8 @@ class RecipesApiService(
     override suspend fun searchRecipe(query: String): NetworkResult<RandomRecipeResponse> =
         safeApiCall<RandomRecipeResponse>(client) {
             url {
-                appendPathSegments(query)
+                appendPathSegments("recipes", "complexSearch")
+                parameters.append("query", query)
                 parameters.append("apiKey", BuildConfig.API_KEY)
             }
             method = HttpMethod.Get
