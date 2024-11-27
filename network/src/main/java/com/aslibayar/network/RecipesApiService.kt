@@ -28,9 +28,19 @@ class RecipesApiService(
             }
             method = HttpMethod.Get
         }
+
+    override suspend fun searchRecipe(query: String): NetworkResult<RandomRecipeResponse> =
+        safeApiCall<RandomRecipeResponse>(client) {
+            url {
+                appendPathSegments(query)
+                parameters.append("apiKey", BuildConfig.API_KEY)
+            }
+            method = HttpMethod.Get
+        }
 }
 
 interface RecipesApiServiceImp {
     suspend fun getRecipeList(): NetworkResult<RandomRecipeResponse>
     suspend fun getRecipeDetail(recipeId: Int): NetworkResult<RecipeDetailResponse>
+    suspend fun searchRecipe(query: String): NetworkResult<RandomRecipeResponse>
 }

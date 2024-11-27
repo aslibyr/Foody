@@ -38,4 +38,20 @@ class RecipeRepository(private val recipesApiService: RecipesApiService) {
             }
         }
     }
+
+    suspend fun searchRecipe(query: String): Flow<BaseUIModel<List<RecipeUIModel?>>> {
+        return flow {
+            emit(BaseUIModel.Loading)
+            when (val response = recipesApiService.searchRecipe(query)) {
+                is NetworkResult.Error -> emit(BaseUIModel.Error("Error"))
+                is NetworkResult.Success -> {
+                    val result = response.data.recipes?.map {
+                        it?.toUIModel()
+                    } ?: emptyList()
+                    emit(BaseUIModel.Success(result))
+                }
+            }
+
+        }
+    }
 }
