@@ -27,7 +27,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.alican.multimodulemovies.components.bottom_bar.BottomBarRoute
 import com.aslibayar.foody.HomeScreenRoute
-import com.aslibayar.foody.SecondRoute
+import com.aslibayar.foody.SearchRoute
 import com.aslibayar.foody.ui.theme.Orange
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
@@ -47,8 +47,8 @@ fun BottomBar(
             icon = Icons.Filled.Home
         ),
         BottomBarRoute(
-            name = "Second",
-            route = SecondRoute,
+            name = "Search",
+            route = SearchRoute,
             icon = Icons.Filled.Search
         ),
     )

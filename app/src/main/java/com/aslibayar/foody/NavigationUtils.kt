@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 object HomeScreenRoute
 
 @Serializable
-object SecondRoute
+object SearchRoute
 
 @Serializable
 data class RecipeDetailRoute(val recipeId: Int)

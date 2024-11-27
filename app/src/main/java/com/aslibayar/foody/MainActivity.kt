@@ -30,7 +30,7 @@ class MainActivity : ComponentActivity() {
             val showBottomBar by remember {
                 derivedStateOf {
                     navBackStackEntry?.destination?.hasRoute<HomeScreenRoute>() == true ||
-                            navBackStackEntry?.destination?.hasRoute<SecondRoute>() == true
+                            navBackStackEntry?.destination?.hasRoute<SearchRoute>() == true
                 }
             }
             FoodyTheme {
