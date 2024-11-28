@@ -50,7 +50,10 @@ import com.aslibayar.foody.ui.theme.CustomTextStyle
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun SearchScreen(viewModel: SearchViewModel = koinViewModel()) {
+fun SearchScreen(
+    viewModel: SearchViewModel = koinViewModel(),
+    openRecipeDetailScreen: (recipeId: Int) -> Unit
+) {
     var text by rememberSaveable {
         mutableStateOf("")
     }
@@ -125,7 +128,7 @@ fun SearchScreen(viewModel: SearchViewModel = koinViewModel()) {
                         ListItem(
                             modifier = Modifier
                                 .clickable {
-//                                openRecipeDetailScreen(it.id)
+                                    openRecipeDetailScreen(it.id)
                                 }
                                 .shadow(elevation = 10.dp, shape = RoundedCornerShape(12.dp))
                                 .clip(RoundedCornerShape(12.dp))

@@ -60,7 +60,10 @@ fun MainNavigation(
 
 
         composable<SearchRoute> {
-            SearchScreen()
+            SearchScreen(openRecipeDetailScreen = {
+                val route = RecipeDetailRoute(it)
+                navController.navigate(route)
+            })
         }
 
         composable<RecipeDetailRoute> {
