@@ -185,8 +185,13 @@ fun StatelessRecipeDetail(modifier: Modifier = Modifier, recipe: RecipeDetailUIM
                         textStyle = CustomTextStyle.regularBlackMedium
                     )
                 }
-
             }
+            Text(
+                "Ingredients",
+                style = CustomTextStyle.regularBlackLarge, color = Orange,
+                modifier = Modifier
+                    .padding(horizontal = 10.dp)
+            )
             FlowRow(modifier = Modifier.padding(vertical = 16.dp)) {
                 recipe.extendedIngredients.distinctBy { it.name }.forEach {
                     IngredientsItem(item = it)

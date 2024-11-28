@@ -62,7 +62,7 @@ fun BottomBar(
     ) {
         AnimatedVisibility(visible = isBottomBarVisible) {
             NavigationBar(
-                containerColor = MaterialTheme.colorScheme.background,
+                containerColor = Color.White,
                 modifier = Modifier.height(110.dp)
             ) {
                 items.forEach { item ->
@@ -92,7 +92,7 @@ fun BottomBar(
                             selectedTextColor = Orange,
                             unselectedIconColor = MaterialTheme.colorScheme.onBackground,
                             unselectedTextColor = MaterialTheme.colorScheme.onBackground,
-                            indicatorColor = MaterialTheme.colorScheme.background
+                            indicatorColor = Color.White
                         )
                     )
                 }

@@ -45,6 +45,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.aslibayar.foody.components.autocomplete.AutoCompleteComponent
 import com.aslibayar.foody.components.image_view.CustomImageView
 import com.aslibayar.foody.components.textfield.CustomOutlinedTextField
+import com.aslibayar.foody.noRippleClick
 import com.aslibayar.foody.ui.theme.CustomTextStyle
 import org.koin.androidx.compose.koinViewModel
 
@@ -64,7 +65,7 @@ fun SearchScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
-            .clickable {
+            .noRippleClick {
                 focusManager.clearFocus()
             }
     ) {

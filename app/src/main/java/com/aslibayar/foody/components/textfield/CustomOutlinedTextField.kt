@@ -1,6 +1,7 @@
 package com.aslibayar.foody.components.textfield
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -59,8 +60,13 @@ fun CustomOutlinedTextField(
             )
         },
         trailingIcon = {
-            AnimatedVisibility(isFocused) {
-                Icon(imageVector = Icons.Outlined.Close, contentDescription = "")
+            AnimatedVisibility(isFocused && text.isNotEmpty()) {
+                Icon(
+                    imageVector = Icons.Outlined.Close,
+                    contentDescription = "",
+                    modifier = Modifier.clickable {
+                        returnText("")
+                    })
             }
         },
         isError = !errorMessage.isNullOrEmpty(),
@@ -84,7 +90,7 @@ fun CustomOutlinedTextField(
         ),
         colors = TextFieldDefaults.colors(
             focusedIndicatorColor = Orange,
-            unfocusedIndicatorColor = LightOrange,
+            unfocusedIndicatorColor = Orange,
             focusedContainerColor = Color.White,
             unfocusedContainerColor = Color.White,
             focusedLabelColor = Orange,

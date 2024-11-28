@@ -26,7 +26,7 @@ fun CustomImageView(
     imageUrl: String,
     modifier: Modifier,
     contentScale: ContentScale = ContentScale.Crop,
-    @DrawableRes errorResource: Int = R.drawable.ic_launcher_background,
+    @DrawableRes errorResource: Int = R.drawable.error,
 ) {
     val imageLoader = LocalContext.current.imageLoader.newBuilder()
         .logger(DebugLogger())
