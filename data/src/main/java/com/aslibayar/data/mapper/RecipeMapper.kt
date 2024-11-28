@@ -7,8 +7,17 @@ import com.aslibayar.data.model.RecipeIngredientsUIModel
 import com.aslibayar.data.model.RecipeUIModel
 import com.aslibayar.network.response.ExtendedIngredientsItem
 import com.aslibayar.network.response.RecipeDetailResponse
+import com.aslibayar.network.response.ResultsItem
 
 fun RecipesItem.toUIModel(): RecipeUIModel {
+    return RecipeUIModel(
+        id = this.id ?: 0,
+        title = this.title ?: "",
+        image = this.image ?: ""
+    )
+}
+
+fun ResultsItem.toUIModel(): RecipeUIModel {
     return RecipeUIModel(
         id = this.id ?: 0,
         title = this.title ?: "",

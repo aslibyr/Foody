@@ -2,6 +2,7 @@ package com.aslibayar.network
 
 import RandomRecipeResponse
 import com.aslibayar.network.response.RecipeDetailResponse
+import com.aslibayar.network.response.SearchResponse
 import io.ktor.client.HttpClient
 import io.ktor.http.HttpMethod
 import io.ktor.http.appendPathSegments
@@ -29,8 +30,8 @@ class RecipesApiService(
             method = HttpMethod.Get
         }
 
-    override suspend fun searchRecipe(query: String): NetworkResult<RandomRecipeResponse> =
-        safeApiCall<RandomRecipeResponse>(client) {
+    override suspend fun searchRecipe(query: String): NetworkResult<SearchResponse> =
+        safeApiCall<SearchResponse>(client) {
             url {
                 appendPathSegments("recipes", "complexSearch")
                 parameters.append("query", query)
@@ -43,5 +44,5 @@ class RecipesApiService(
 interface RecipesApiServiceImp {
     suspend fun getRecipeList(): NetworkResult<RandomRecipeResponse>
     suspend fun getRecipeDetail(recipeId: Int): NetworkResult<RecipeDetailResponse>
-    suspend fun searchRecipe(query: String): NetworkResult<RandomRecipeResponse>
+    suspend fun searchRecipe(query: String): NetworkResult<SearchResponse>
 }

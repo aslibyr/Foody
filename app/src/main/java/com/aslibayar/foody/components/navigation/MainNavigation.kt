@@ -51,7 +51,7 @@ fun MainNavigation(
 
     ) {
         composable<HomeScreenRoute> {
-            HomeScreen(modifier = modifier, openRecipeDetailScreen = {
+            HomeScreen(openRecipeDetailScreen = {
                 val route = RecipeDetailRoute(it)
                 navController.navigate(route)
             }

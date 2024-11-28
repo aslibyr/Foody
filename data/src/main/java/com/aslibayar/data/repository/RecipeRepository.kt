@@ -45,7 +45,7 @@ class RecipeRepository(private val recipesApiService: RecipesApiService) {
             when (val response = recipesApiService.searchRecipe(query)) {
                 is NetworkResult.Error -> emit(BaseUIModel.Error("Error"))
                 is NetworkResult.Success -> {
-                    val result = response.data.recipes?.map {
+                    val result = response.data.results?.map {
                         it?.toUIModel()
                     } ?: emptyList()
                     emit(BaseUIModel.Success(result))
