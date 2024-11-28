@@ -1,8 +1,12 @@
 package com.aslibayar.foody.components.textfield
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
@@ -54,7 +58,11 @@ fun CustomOutlinedTextField(
                 fontSize = 11.sp
             )
         },
-        trailingIcon = {},
+        trailingIcon = {
+            AnimatedVisibility(isFocused) {
+                Icon(imageVector = Icons.Outlined.Close, contentDescription = "")
+            }
+        },
         isError = !errorMessage.isNullOrEmpty(),
         supportingText = {
             errorMessage?.let { it1 ->
@@ -87,6 +95,6 @@ fun CustomOutlinedTextField(
         ),
         shape = RoundedCornerShape(30.dp),
         maxLines = 1,
-        singleLine = true
+        singleLine = true,
     )
 }

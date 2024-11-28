@@ -2,7 +2,7 @@ package com.aslibayar.network.di
 
 
 import com.aslibayar.network.BuildConfig
-import com.aslibayar.network.RecipesApiService
+import com.aslibayar.network.RecipesApiServiceImp
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
@@ -16,7 +16,7 @@ import org.koin.dsl.module
 
 val provideNetworkModule = module {
     single {
-        RecipesApiService(get())
+        RecipesApiServiceImp(get())
     }
     single {
         HttpClient {

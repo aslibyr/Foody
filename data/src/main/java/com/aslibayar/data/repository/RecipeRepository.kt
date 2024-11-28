@@ -5,16 +5,16 @@ import com.aslibayar.data.model.BaseUIModel
 import com.aslibayar.data.model.RecipeDetailUIModel
 import com.aslibayar.data.model.RecipeUIModel
 import com.aslibayar.network.NetworkResult
-import com.aslibayar.network.RecipesApiService
+import com.aslibayar.network.RecipesApiServiceImp
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class RecipeRepository(private val recipesApiService: RecipesApiService) {
+class RecipeRepository(private val recipesApiServiceImp: RecipesApiServiceImp) {
 
     fun getRandomRecipes(): Flow<BaseUIModel<List<RecipeUIModel?>>> {
         return flow {
             emit(BaseUIModel.Loading)
-            when (val response = recipesApiService.getRecipeList()) {
+            when (val response = recipesApiServiceImp.getRecipeList()) {
                 is NetworkResult.Error -> emit(BaseUIModel.Error("Error"))
                 is NetworkResult.Success -> {
                     val result = response.data.recipes?.map {
@@ -29,7 +29,7 @@ class RecipeRepository(private val recipesApiService: RecipesApiService) {
     fun getRecipeDetail(recipeId: Int): Flow<BaseUIModel<RecipeDetailUIModel>> {
         return flow {
             emit(BaseUIModel.Loading)
-            when (val response = recipesApiService.getRecipeDetail(recipeId)) {
+            when (val response = recipesApiServiceImp.getRecipeDetail(recipeId)) {
                 is NetworkResult.Error -> emit(BaseUIModel.Error("Error"))
                 is NetworkResult.Success -> {
                     val result = response.data.toUIModel()
@@ -42,12 +42,25 @@ class RecipeRepository(private val recipesApiService: RecipesApiService) {
     fun searchRecipe(query: String): Flow<BaseUIModel<List<RecipeUIModel?>>> {
         return flow {
             emit(BaseUIModel.Loading)
-            when (val response = recipesApiService.searchRecipe(query)) {
+            when (val response = recipesApiServiceImp.searchRecipe(query)) {
                 is NetworkResult.Error -> emit(BaseUIModel.Error("Error"))
                 is NetworkResult.Success -> {
                     val result = response.data.results?.map {
                         it?.toUIModel()
                     } ?: emptyList()
+                    emit(BaseUIModel.Success(result))
+                }
+            }
+        }
+    }
+
+    fun autoComplete(query: String): Flow<BaseUIModel<List<String>>> {
+        return flow {
+            emit(BaseUIModel.Loading)
+            when (val response = recipesApiServiceImp.autoComplete(query)) {
+                is NetworkResult.Error -> emit(BaseUIModel.Error("Error"))
+                is NetworkResult.Success -> {
+                    val result = response.data.map { it.title ?: "" }
                     emit(BaseUIModel.Success(result))
                 }
             }

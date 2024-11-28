@@ -1,5 +1,6 @@
 package com.aslibayar.foody.ui.search
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -27,14 +28,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -44,6 +42,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.aslibayar.foody.components.autocomplete.AutoCompleteComponent
 import com.aslibayar.foody.components.image_view.CustomImageView
 import com.aslibayar.foody.components.textfield.CustomOutlinedTextField
 import com.aslibayar.foody.ui.theme.CustomTextStyle
@@ -54,12 +53,8 @@ fun SearchScreen(
     viewModel: SearchViewModel = koinViewModel(),
     openRecipeDetailScreen: (recipeId: Int) -> Unit
 ) {
-    var text by rememberSaveable {
-        mutableStateOf("")
-    }
 
-    val recipeList by viewModel.recipeList.collectAsStateWithLifecycle()
-    val focusRequester = remember { FocusRequester() }
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var hasFocus by remember {
         mutableStateOf(false)
     }
@@ -69,11 +64,8 @@ fun SearchScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
-            .focusRequester(focusRequester = focusRequester)
             .clickable {
-                if (hasFocus) {
-                    focusManager.clearFocus()
-                }
+                focusManager.clearFocus()
             }
     ) {
         CustomOutlinedTextField(
@@ -85,18 +77,28 @@ fun SearchScreen(
                     hasFocus = it.hasFocus
                 },
             label = "Search",
-            text = text,
-            returnText = { text = it },
+            text = uiState.searchQuery,
+            returnText = { viewModel.updateQuery(it) },
             onImeClicked = {
-                viewModel.searchRecipe(text)
+                viewModel.searchRecipe()
                 hasFocus = false
+                focusManager.clearFocus()
             },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Done
             ),
         )
-        if (text.isEmpty()) {
+        AnimatedVisibility(visible = uiState.autoCompleteList.isNotEmpty() && hasFocus) {
+            AutoCompleteComponent(list = uiState.autoCompleteList,
+                onTextClick = { text ->
+                    viewModel.searchRecipe(text)
+                    focusManager.clearFocus()
+                    hasFocus = false
+                    viewModel.updateQuery(text)
+                })
+        }
+        if (uiState.searchQuery.isEmpty()) {
             Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -123,7 +125,7 @@ fun SearchScreen(
                     .padding(horizontal = 10.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                items(recipeList.recipes) {
+                items(uiState.recipes) {
                     it?.let {
                         ListItem(
                             modifier = Modifier

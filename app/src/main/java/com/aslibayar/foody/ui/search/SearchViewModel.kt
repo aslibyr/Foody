@@ -12,22 +12,21 @@ import kotlinx.coroutines.launch
 
 class SearchViewModel(private val repository: RecipeRepository) : ViewModel() {
 
-    private val _recipeList =
+    private val _uiState =
         MutableStateFlow(SearchScreenUIStateModel())
-    val recipeList = _recipeList.asStateFlow()
+    val uiState = _uiState.asStateFlow()
 
-    fun searchRecipe(query: String) {
-        _recipeList.update { it.copy(isLoading = true, searchQuery = query) }
-
+    fun searchRecipe(query: String? = null) {
+        val searchQuery = query ?: uiState.value.searchQuery
         viewModelScope.launch(Dispatchers.IO) {
-            repository.searchRecipe(query).collect { result ->
+            repository.searchRecipe(searchQuery).collect { result ->
                 when (result) {
                     is BaseUIModel.Loading -> {
-                        _recipeList.update { it.copy(isLoading = true) }
+                        _uiState.update { it.copy(isLoading = true) }
                     }
 
                     is BaseUIModel.Success -> {
-                        _recipeList.update {
+                        _uiState.update {
                             it.copy(
                                 recipes = result.data,
                                 isLoading = false
@@ -36,7 +35,7 @@ class SearchViewModel(private val repository: RecipeRepository) : ViewModel() {
                     }
 
                     is BaseUIModel.Error -> {
-                        _recipeList.update {
+                        _uiState.update {
                             it.copy(
                                 recipes = emptyList(),
                                 isLoading = false
@@ -47,4 +46,27 @@ class SearchViewModel(private val repository: RecipeRepository) : ViewModel() {
             }
         }
     }
+
+    private fun autoComplete(query: String) {
+        viewModelScope.launch {
+            repository.autoComplete(query).collect { result ->
+                if (result is BaseUIModel.Success) {
+                    _uiState.update { it.copy(autoCompleteList = result.data) }
+                }
+                _uiState.update { it.copy(isLoading = result is BaseUIModel.Loading) }
+            }
+        }
+    }
+
+    fun updateQuery(query: String) {
+        _uiState.update { it.copy(searchQuery = query) }
+        if (query.length > 2 && _uiState.value.isLoading.not()) {
+            autoComplete(query)
+        }
+        if (query.isEmpty()) {
+            _uiState.update { it.copy(autoCompleteList = emptyList(), recipes = emptyList()) }
+        }
+    }
 }
+
+

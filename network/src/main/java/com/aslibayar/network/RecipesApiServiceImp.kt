@@ -1,15 +1,16 @@
 package com.aslibayar.network
 
 import RandomRecipeResponse
+import com.aslibayar.network.response.AutoCompleteResponseItem
 import com.aslibayar.network.response.RecipeDetailResponse
 import com.aslibayar.network.response.SearchResponse
 import io.ktor.client.HttpClient
 import io.ktor.http.HttpMethod
 import io.ktor.http.appendPathSegments
 
-class RecipesApiService(
+class RecipesApiServiceImp(
     private val client: HttpClient
-) : RecipesApiServiceImp {
+) : RecipesApiService {
 
     override suspend fun getRecipeList(): NetworkResult<RandomRecipeResponse> =
         safeApiCall<RandomRecipeResponse>(client) {
@@ -39,10 +40,22 @@ class RecipesApiService(
             }
             method = HttpMethod.Get
         }
+
+    override suspend fun autoComplete(query: String): NetworkResult<List<AutoCompleteResponseItem>> =
+        safeApiCall<List<AutoCompleteResponseItem>>(client) {
+            url {
+                appendPathSegments("recipes", "autocomplete")
+                parameters.append("query", query)
+                parameters.append("number", 5.toString())
+                parameters.append("apiKey", BuildConfig.API_KEY)
+            }
+            method = HttpMethod.Get
+        }
 }
 
-interface RecipesApiServiceImp {
+interface RecipesApiService {
     suspend fun getRecipeList(): NetworkResult<RandomRecipeResponse>
     suspend fun getRecipeDetail(recipeId: Int): NetworkResult<RecipeDetailResponse>
     suspend fun searchRecipe(query: String): NetworkResult<SearchResponse>
+    suspend fun autoComplete(query: String): NetworkResult<List<AutoCompleteResponseItem>>
 }

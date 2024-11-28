@@ -6,4 +6,5 @@ data class SearchScreenUIStateModel(
     val recipes: List<RecipeUIModel?> = emptyList(),
     val isLoading: Boolean = false,
     val searchQuery: String = "",
+    val autoCompleteList: List<String> = emptyList()
 )
