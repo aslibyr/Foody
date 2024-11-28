@@ -25,7 +25,7 @@ import com.aslibayar.foody.ui.theme.Orange
 fun CustomImageView(
     imageUrl: String,
     modifier: Modifier,
-    contentScale: ContentScale = ContentScale.Crop,
+    contentScale: ContentScale = ContentScale.Fit,
     @DrawableRes errorResource: Int = R.drawable.error,
 ) {
     val imageLoader = LocalContext.current.imageLoader.newBuilder()

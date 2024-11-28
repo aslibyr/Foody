@@ -16,6 +16,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,7 +34,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.compose.AsyncImage
 import com.aslibayar.data.model.BaseUIModel
 import com.aslibayar.data.model.RecipeDetailUIModel
 import com.aslibayar.data.model.RecipeIngredientsUIModel
@@ -46,7 +48,7 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun RecipeDetailScreen(
-    viewModel: RecipeDetailViewModel = koinViewModel()
+    viewModel: RecipeDetailViewModel = koinViewModel(), onBackClick: () -> Unit
 ) {
     val recipe by viewModel.recipe.collectAsStateWithLifecycle()
 
@@ -59,7 +61,7 @@ fun RecipeDetailScreen(
 
             is BaseUIModel.Success -> {
                 val recipeData = (recipe as BaseUIModel.Success<RecipeDetailUIModel>).data
-                StatelessRecipeDetail(recipe = recipeData)
+                StatelessRecipeDetail(recipe = recipeData, onBackClick = onBackClick)
             }
         }
     }
@@ -67,16 +69,16 @@ fun RecipeDetailScreen(
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun StatelessRecipeDetail(modifier: Modifier = Modifier, recipe: RecipeDetailUIModel) {
+fun StatelessRecipeDetail(
+    modifier: Modifier = Modifier,
+    recipe: RecipeDetailUIModel,
+    onBackClick: () -> Unit
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        AsyncImage(
-            model = recipe.image,
-            contentDescription = null,
-            modifier = Modifier.fillMaxWidth(),
-        )
+        CustomImageView(imageUrl = recipe.image, modifier = Modifier.fillMaxWidth())
 
         Column(
             modifier = modifier
@@ -148,7 +150,8 @@ fun StatelessRecipeDetail(modifier: Modifier = Modifier, recipe: RecipeDetailUIM
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 16.dp),
-                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        verticalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
                         recipe.diets.forEach {
                             Box(
@@ -199,6 +202,18 @@ fun StatelessRecipeDetail(modifier: Modifier = Modifier, recipe: RecipeDetailUIM
             }
             Spacer(modifier = Modifier.height(30.dp))
         }
+        Icon(
+            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+            "",
+            modifier = Modifier
+                .padding(10.dp)
+                .noRippleClick {
+                    onBackClick()
+                }
+                .size(32.dp)
+                .shadow(50.dp),
+            tint = Color.White
+        )
     }
 }
 

@@ -67,7 +67,9 @@ fun MainNavigation(
         }
 
         composable<RecipeDetailRoute> {
-            RecipeDetailScreen()
+            RecipeDetailScreen(onBackClick = {
+                navController.popBackStack()
+            })
+        }
         }
     }
-}
