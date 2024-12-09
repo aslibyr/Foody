@@ -43,52 +43,52 @@ fun HomeScreen(
 
     if (recipeList.isLoading) {
         CustomLoading()
-    }
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-    ) {
-        QuickAccess(onQuickAccessClick = onQuickAccessClick)
-        LazyColumn(
-            Modifier
+    } else {
+        Column(
+            modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 10.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
+                .background(Color.White)
         ) {
-            items(recipeList.recipes) {
-                it?.let {
-                    ListItem(
-                        modifier = Modifier
-                            .clickable {
-                                openRecipeDetailScreen(it.id)
-                            }
-                            .shadow(elevation = 10.dp, shape = RoundedCornerShape(12.dp))
-                            .clip(RoundedCornerShape(12.dp))
-                            .fillMaxWidth(),
-                        headlineContent = {
-                            Text(
-                                it.title,
-                                style = CustomTextStyle.regularBlackLarge
-                            )
-                        },
-                        leadingContent = {
-                            Box(
-                                modifier = Modifier
-                                    .wrapContentSize()
-                                    .shadow(elevation = 10.dp, shape = RoundedCornerShape(8.dp))
-                                    .clip(RoundedCornerShape(8.dp))
-                            ) {
-                                CustomImageView(
-                                    imageUrl = it.image, modifier = Modifier
-                                        .height(80.dp)
-                                        .width(100.dp), contentScale = ContentScale.Crop
+            QuickAccess(onQuickAccessClick = onQuickAccessClick)
+            LazyColumn(
+                Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 10.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                items(recipeList.recipes) {
+                    it?.let {
+                        ListItem(
+                            modifier = Modifier
+                                .clickable {
+                                    openRecipeDetailScreen(it.id)
+                                }
+                                .shadow(elevation = 10.dp, shape = RoundedCornerShape(12.dp))
+                                .clip(RoundedCornerShape(12.dp))
+                                .fillMaxWidth(),
+                            headlineContent = {
+                                Text(
+                                    it.title,
+                                    style = CustomTextStyle.regularBlackLarge
                                 )
-                            }
-                        },
-                        colors = ListItemDefaults.colors(containerColor = Color.White)
-                    )
+                            },
+                            leadingContent = {
+                                Box(
+                                    modifier = Modifier
+                                        .wrapContentSize()
+                                        .shadow(elevation = 10.dp, shape = RoundedCornerShape(8.dp))
+                                        .clip(RoundedCornerShape(8.dp))
+                                ) {
+                                    CustomImageView(
+                                        imageUrl = it.image, modifier = Modifier
+                                            .height(80.dp)
+                                            .width(100.dp), contentScale = ContentScale.Crop
+                                    )
+                                }
+                            },
+                            colors = ListItemDefaults.colors(containerColor = Color.White)
+                        )
+                    }
                 }
             }
         }

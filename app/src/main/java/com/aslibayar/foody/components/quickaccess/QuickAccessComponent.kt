@@ -50,24 +50,28 @@ fun QuickAccess(onQuickAccessClick: (ScreenType) -> Unit) {
         ) {
             QuickAccessItem(
                 icon = ImageVector.vectorResource(R.drawable.heart),
+                title = "Favorites",
                 screenType = ScreenType.FAVORITE,
                 onItemClick = onQuickAccessClick
             )
 
             QuickAccessItem(
                 icon = ImageVector.vectorResource(R.drawable.recent),
+                title = "Recent",
                 screenType = ScreenType.RECENT,
                 onItemClick = onQuickAccessClick
             )
 
             QuickAccessItem(
                 icon = ImageVector.vectorResource(R.drawable.vegan),
+                title = "Vegan",
                 screenType = ScreenType.VEGAN,
                 onItemClick = onQuickAccessClick
             )
 
             QuickAccessItem(
                 icon = ImageVector.vectorResource(R.drawable.meat),
+                title = "Meat",
                 screenType = ScreenType.MEAT,
                 onItemClick = onQuickAccessClick
             )
@@ -78,6 +82,7 @@ fun QuickAccess(onQuickAccessClick: (ScreenType) -> Unit) {
 @Composable
 fun QuickAccessItem(
     icon: ImageVector,
+    title: String,
     screenType: ScreenType,
     onItemClick: (ScreenType) -> Unit
 ) {
@@ -101,6 +106,10 @@ fun QuickAccessItem(
                 modifier = Modifier.size(20.dp)
             )
         }
-        Text(screenType.name, style = CustomTextStyle.regularBlackSmall)
+        Text(
+            title,
+            style = CustomTextStyle.regularBlackSmall,
+            modifier = Modifier.padding(top = 4.dp)
+        )
     }
 }
