@@ -29,13 +29,15 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.aslibayar.foody.components.image_view.CustomImageView
 import com.aslibayar.foody.components.loading.CustomLoading
 import com.aslibayar.foody.components.quickaccess.QuickAccess
+import com.aslibayar.foody.ui.listing.ScreenType
 import com.aslibayar.foody.ui.theme.CustomTextStyle
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun HomeScreen(
     viewModel: HomeScreenViewModel = koinViewModel(),
-    openRecipeDetailScreen: (recipeId: Int) -> Unit
+    openRecipeDetailScreen: (recipeId: Int) -> Unit,
+    onQuickAccessClick: (ScreenType) -> Unit
 ) {
     val recipeList by viewModel.recipeList.collectAsStateWithLifecycle()
 
@@ -48,7 +50,7 @@ fun HomeScreen(
             .fillMaxSize()
             .background(Color.White)
     ) {
-        QuickAccess()
+        QuickAccess(onQuickAccessClick = onQuickAccessClick)
         LazyColumn(
             Modifier
                 .fillMaxSize()

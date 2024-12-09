@@ -9,10 +9,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.aslibayar.foody.HomeScreenRoute
+import com.aslibayar.foody.ListingRoute
 import com.aslibayar.foody.RecipeDetailRoute
 import com.aslibayar.foody.SearchRoute
 import com.aslibayar.foody.ui.detail.RecipeDetailScreen
 import com.aslibayar.foody.ui.home.HomeScreen
+import com.aslibayar.foody.ui.listing.ListingScreen
 import com.aslibayar.foody.ui.search.SearchScreen
 
 @Composable
@@ -54,7 +56,11 @@ fun MainNavigation(
             HomeScreen(openRecipeDetailScreen = {
                 val route = RecipeDetailRoute(it)
                 navController.navigate(route)
-            }
+            },
+                onQuickAccessClick = {
+                    val route = ListingRoute(it)
+                    navController.navigate(route)
+                }
             )
         }
 
@@ -64,6 +70,10 @@ fun MainNavigation(
                 val route = RecipeDetailRoute(it)
                 navController.navigate(route)
             })
+        }
+
+        composable<ListingRoute> {
+            ListingScreen()
         }
 
         composable<RecipeDetailRoute> {

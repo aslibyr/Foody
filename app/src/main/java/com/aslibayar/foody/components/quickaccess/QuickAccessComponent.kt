@@ -2,6 +2,7 @@ package com.aslibayar.foody.components.quickaccess
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,11 +23,12 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.aslibayar.foody.R
+import com.aslibayar.foody.ui.listing.ScreenType
 import com.aslibayar.foody.ui.theme.CustomTextStyle
 import com.aslibayar.foody.ui.theme.Orange
 
 @Composable
-fun QuickAccess() {
+fun QuickAccess(onQuickAccessClick: (ScreenType) -> Unit) {
     Column(
         modifier = Modifier
             .wrapContentSize()
@@ -46,18 +48,43 @@ fun QuickAccess() {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            QuickAccessItem(icon = ImageVector.vectorResource(R.drawable.heart), title = "Favorite")
-            QuickAccessItem(icon = ImageVector.vectorResource(R.drawable.recent), title = "Recent")
-            QuickAccessItem(icon = ImageVector.vectorResource(R.drawable.vegan), title = "Vegan")
-            QuickAccessItem(icon = ImageVector.vectorResource(R.drawable.meat), title = "Meat")
+            QuickAccessItem(
+                icon = ImageVector.vectorResource(R.drawable.heart),
+                screenType = ScreenType.FAVORITE,
+                onItemClick = onQuickAccessClick
+            )
+
+            QuickAccessItem(
+                icon = ImageVector.vectorResource(R.drawable.recent),
+                screenType = ScreenType.RECENT,
+                onItemClick = onQuickAccessClick
+            )
+
+            QuickAccessItem(
+                icon = ImageVector.vectorResource(R.drawable.vegan),
+                screenType = ScreenType.VEGAN,
+                onItemClick = onQuickAccessClick
+            )
+
+            QuickAccessItem(
+                icon = ImageVector.vectorResource(R.drawable.meat),
+                screenType = ScreenType.MEAT,
+                onItemClick = onQuickAccessClick
+            )
         }
     }
 }
 
 @Composable
-fun QuickAccessItem(icon: ImageVector, title: String) {
+fun QuickAccessItem(
+    icon: ImageVector,
+    screenType: ScreenType,
+    onItemClick: (ScreenType) -> Unit
+) {
     Column(
-        modifier = Modifier.fillMaxHeight(),
+        modifier = Modifier
+            .fillMaxHeight()
+            .clickable { onItemClick(screenType) },
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -68,8 +95,12 @@ fun QuickAccessItem(icon: ImageVector, title: String) {
                 .background(Orange),
             contentAlignment = Alignment.Center
         ) {
-            Image(imageVector = icon, contentDescription = "", modifier = Modifier.size(20.dp))
+            Image(
+                imageVector = icon,
+                contentDescription = screenType.name,
+                modifier = Modifier.size(20.dp)
+            )
         }
-        Text(title, style = CustomTextStyle.regularBlackSmall)
+        Text(screenType.name, style = CustomTextStyle.regularBlackSmall)
     }
 }

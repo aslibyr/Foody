@@ -1,9 +1,9 @@
 package com.aslibayar.data.model
 
 data class RecipeUIModel(
-    val id: Int,
-    val title: String,
-    val image: String,
+    val id: Int = 0,
+    val title: String = "",
+    val image: String = "",
 )
 
 data class RecipeDetailUIModel(
