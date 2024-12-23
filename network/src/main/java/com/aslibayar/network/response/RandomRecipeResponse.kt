@@ -127,13 +127,13 @@ data class RecipesItem(
 //    @SerialName("servings")
 //    val servings: Int? = null,
 //
-//    @SerialName("vegetarian")
-//    val vegetarian: Boolean? = null,
+    @SerialName("vegetarian")
+    val vegetarian: Boolean? = null,
 //
 //
 //
-//    @SerialName("preparationMinutes")
-//    val preparationMinutes: Double? = null,
+    @SerialName("preparationMinutes")
+    val preparationMinutes: Double? = null,
 //
 //    @SerialName("imageType")
 //    val imageType: String? = null,
@@ -141,17 +141,17 @@ data class RecipesItem(
 //    @SerialName("summary")
 //    val summary: String? = null,
 //
-//    @SerialName("cookingMinutes")
-//    val cookingMinutes: Double? = null,
-//
+    @SerialName("cookingMinutes")
+    val cookingMinutes: Double? = null,
+
     @SerialName("image")
     val image: String? = null,
 //
 //    @SerialName("veryHealthy")
 //    val veryHealthy: Boolean? = null,
 //
-//    @SerialName("vegan")
-//    val vegan: Boolean? = null,
+    @SerialName("vegan")
+    val vegan: Boolean? = null,
 //
 //    @SerialName("cheap")
 //    val cheap: Boolean? = null,

@@ -13,7 +13,9 @@ fun RecipesItem.toUIModel(): RecipeUIModel {
     return RecipeUIModel(
         id = this.id ?: 0,
         title = this.title ?: "",
-        image = this.image ?: ""
+        image = this.image ?: "",
+        vegetarian = this.vegetarian ?: false,
+        vegan = this.vegan ?: false
     )
 }
 

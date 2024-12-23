@@ -4,6 +4,8 @@ data class RecipeUIModel(
     val id: Int = 0,
     val title: String = "",
     val image: String = "",
+    val vegetarian: Boolean = false,
+    val vegan: Boolean = false
 )
 
 data class RecipeDetailUIModel(

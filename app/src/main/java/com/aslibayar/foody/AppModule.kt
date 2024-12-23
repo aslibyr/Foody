@@ -21,6 +21,6 @@ val appModule = module {
         SearchViewModel(get())
     }
     viewModel { (handle: SavedStateHandle) ->
-        ListingViewModel(handle)
+        ListingViewModel(handle, get())
     }
 }
