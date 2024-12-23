@@ -30,7 +30,10 @@ import com.aslibayar.foody.ui.theme.CustomTextStyle
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun ListingScreen(viewModel: ListingViewModel = koinViewModel()) {
+fun ListingScreen(
+    viewModel: ListingViewModel = koinViewModel(),
+    openRecipeDetailScreen: (recipeId: Int) -> Unit,
+) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     if (uiState.isLoading) {
@@ -46,7 +49,7 @@ fun ListingScreen(viewModel: ListingViewModel = koinViewModel()) {
                 ListItem(
                     modifier = Modifier
                         .clickable {
-//                            openRecipeDetailScreen(recipe.id)
+                            openRecipeDetailScreen(recipe?.id ?: 0)
                         }
                         .shadow(elevation = 10.dp, shape = RoundedCornerShape(12.dp))
                         .clip(RoundedCornerShape(12.dp))

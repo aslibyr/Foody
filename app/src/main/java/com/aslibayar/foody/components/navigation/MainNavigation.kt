@@ -73,7 +73,10 @@ fun MainNavigation(
         }
 
         composable<ListingRoute> {
-            ListingScreen()
+            ListingScreen(openRecipeDetailScreen = {
+                val route = RecipeDetailRoute(it)
+                navController.navigate(route)
+            })
         }
 
         composable<RecipeDetailRoute> {
