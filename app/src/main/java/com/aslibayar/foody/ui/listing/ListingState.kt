@@ -7,4 +7,5 @@ enum class ScreenType(widgetType: String) {
     VEGAN("Vegan"),
     MEAT("Meat"),
     GLUTEN_FREE("Gluten Free"),
+    TODAY("Today's Pick")
 }

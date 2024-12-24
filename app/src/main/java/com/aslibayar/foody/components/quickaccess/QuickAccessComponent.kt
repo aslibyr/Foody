@@ -12,7 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,8 +31,8 @@ import com.aslibayar.foody.ui.theme.Orange
 fun QuickAccess(onQuickAccessClick: (ScreenType) -> Unit) {
     Column(
         modifier = Modifier
-            .wrapContentSize()
-            .padding(top = 16.dp)
+            .fillMaxWidth()
+            .wrapContentHeight()
             .padding(start = 16.dp),
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.spacedBy(10.dp)

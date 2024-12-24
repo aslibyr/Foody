@@ -4,9 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -25,59 +25,74 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.aslibayar.data.mapper.toWidgetModel
-import com.aslibayar.data.model.RecipeWidgetModel
+import com.aslibayar.data.model.RecipeUIModel
+import com.aslibayar.foody.R
 import com.aslibayar.foody.components.image_view.CustomImageView
+import com.aslibayar.foody.ui.theme.CustomTextStyle
+import com.aslibayar.foody.ui.theme.Gray
 
 @Composable
 fun RecipeWidget(
     model: RecipeWidgetComponentModel,
     openListScreen: () -> Unit,
-    onRecipeClick: (String) -> Unit
+    openRecipeDetailScreen: (recipeId: Int) -> Unit,
+    itemWidth: Dp = 150.dp,
+    itemHeight: Dp = 120.dp,
 ) {
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 6.dp)
             .background(Color.White),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp)
+                .height(30.dp)
+                .padding(start = 16.dp)
                 .clickable { openListScreen() },
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-
+            Text(
+                modifier = Modifier.weight(1f),
+                text = model.widgetCategory,
+                style = CustomTextStyle.regularBlackLarge
+            )
             Text(
                 text = "View all",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.secondary
+                style = CustomTextStyle.regularBlackMedium
             )
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                 contentDescription = "",
                 modifier = Modifier
-                    .size(20.dp)
+                    .size(30.dp)
                     .padding(start = 8.dp),
                 tint = MaterialTheme.colorScheme.secondary
             )
         }
-        LazyRow(Modifier.fillMaxWidth(), contentPadding = PaddingValues(start = 16.dp)) {
-            items(model.recipes) {
-                it?.let { it1 ->
+        LazyRow(
+            Modifier.fillMaxWidth(),
+        ) {
+            items(model.recipes) { recipe ->
+                recipe?.let {
                     RecipeWidgetItem(
-                        recipe = it1.toWidgetModel(),
-                        onRecipeClick = onRecipeClick
+                        recipe = it,
+                        width = itemWidth,
+                        height = itemHeight,
+                        onRecipeClick = { openRecipeDetailScreen(recipe.id) }
                     )
                 }
             }
@@ -87,39 +102,65 @@ fun RecipeWidget(
 
 @Composable
 fun RecipeWidgetItem(
-    recipe: RecipeWidgetModel,
-    onRecipeClick: (String) -> Unit
+    recipe: RecipeUIModel,
+    onRecipeClick: (recipeId: Int) -> Unit,
+    width: Dp,
+    height: Dp
 ) {
     Card(
         modifier = Modifier
             .wrapContentSize()
+            .background(Color.White)
             .clickable {
-                onRecipeClick(recipe.id.toString())
+                onRecipeClick(recipe.id)
             }
             .padding(8.dp)
-            .width(150.dp)
-            .shadow(elevation = 8.dp),
-        shape = RoundedCornerShape(15.dp),
+            .shadow(elevation = 10.dp, shape = RoundedCornerShape(12.dp))
+            .clip(RoundedCornerShape(12.dp)),
         elevation = CardDefaults.cardElevation(),
     ) {
         Column(
-            modifier = Modifier.wrapContentHeight()
+            modifier = Modifier
+                .wrapContentHeight()
+                .background(Color.White)
         ) {
             CustomImageView(
                 imageUrl = recipe.image,
-                modifier = Modifier.wrapContentHeight(),
+                modifier = Modifier
+                    .width(width)
+                    .height(height),
                 contentScale = ContentScale.Crop
             )
-            // Title
             Text(
                 text = recipe.title,
-                style = MaterialTheme.typography.bodyMedium,
-                fontSize = 12.sp,
-                color = Color.White,
+                style = CustomTextStyle.regularBlackMedium,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.padding(vertical = 4.dp, horizontal = 4.dp)
+                modifier = Modifier.padding(vertical = 8.dp, horizontal = 8.dp)
             )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp)
+                    .padding(bottom = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(id = R.drawable.clock),
+                    contentDescription = "",
+                    modifier = Modifier
+                        .size(16.dp)
+                        .padding(end = 4.dp),
+                    tint = MaterialTheme.colorScheme.secondary
+                )
+                Text(
+                    text = recipe.readyInMinutes,
+                    fontWeight = FontWeight.Light,
+                    style = CustomTextStyle.regularBlackMedium,
+                    color = Gray,
+                    fontSize = 12.sp,
+                )
+            }
         }
     }
 }

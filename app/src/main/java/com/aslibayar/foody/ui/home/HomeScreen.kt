@@ -51,17 +51,29 @@ fun HomeScreen(
                 .fillMaxSize()
                 .background(Color.White)
         ) {
-            QuickAccess(onQuickAccessClick = onQuickAccessClick)
-            RecipeWidget(
-                model = RecipeWidgetComponentModel(recipes = recipeList.recipes),
-                openListScreen = {},
-                onRecipeClick = {})
             LazyColumn(
                 Modifier
                     .fillMaxSize()
                     .padding(horizontal = 10.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
+                item {
+                    RecipeWidget(
+                        model = RecipeWidgetComponentModel(
+                            recipes = recipeList.recipes,
+                            widgetCategory = "Today's Special"
+                        ),
+                        itemWidth = 280.dp,
+                        itemHeight = 200.dp,
+                        openListScreen = { onQuickAccessClick(ScreenType.TODAY) },
+                        openRecipeDetailScreen = openRecipeDetailScreen
+                    )
+                }
+
+                item {
+                    QuickAccess(onQuickAccessClick = onQuickAccessClick)
+                }
+
                 items(recipeList.recipes) {
                     it?.let {
                         ListItem(

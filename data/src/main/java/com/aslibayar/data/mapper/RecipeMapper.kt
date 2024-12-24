@@ -17,7 +17,7 @@ fun RecipesItem.toUIModel(): RecipeUIModel {
         vegetarian = this.vegetarian ?: false,
         vegan = this.vegan ?: false,
         glutenFree = this.glutenFree ?: false,
-        readyInMinutes = this.readyInMinutes.toString() + "min."
+        readyInMinutes = this.readyInMinutes.toString() + " min."
     )
 }
 
@@ -43,7 +43,7 @@ fun RecipeDetailResponse.toUIModel(): RecipeDetailUIModel {
         extendedIngredients = extendedIngredients,
         sourceUrl = this.sourceUrl ?: "",
         diets = this.diets ?: emptyList(),
-        time = (this.readyInMinutes.toString() + "min."),
+        time = (this.readyInMinutes.toString() + " min."),
         servings = this.servings.toString()
     )
 }
