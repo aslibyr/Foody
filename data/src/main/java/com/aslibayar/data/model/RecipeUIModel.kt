@@ -7,6 +7,7 @@ data class RecipeUIModel(
     val vegetarian: Boolean = false,
     val vegan: Boolean = false,
     val glutenFree: Boolean = false,
+    val readyInMinutes: String = ""
 )
 
 data class RecipeDetailUIModel(
@@ -26,11 +27,4 @@ data class RecipeIngredientsUIModel(
     val ingredientId: Int,
     val image: String,
     val name: String
-)
-
-data class RecipeWidgetModel(
-    val id: Int = 0,
-    val title: String = "",
-    val image: String = "",
-    val widgetCategory: String = ""
 )

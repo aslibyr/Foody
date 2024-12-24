@@ -5,7 +5,6 @@ import com.aslibayar.data.BuildConfig
 import com.aslibayar.data.model.RecipeDetailUIModel
 import com.aslibayar.data.model.RecipeIngredientsUIModel
 import com.aslibayar.data.model.RecipeUIModel
-import com.aslibayar.data.model.RecipeWidgetModel
 import com.aslibayar.network.response.ExtendedIngredientsItem
 import com.aslibayar.network.response.RecipeDetailResponse
 import com.aslibayar.network.response.ResultsItem
@@ -16,7 +15,9 @@ fun RecipesItem.toUIModel(): RecipeUIModel {
         title = this.title ?: "",
         image = this.image ?: "",
         vegetarian = this.vegetarian ?: false,
-        vegan = this.vegan ?: false
+        vegan = this.vegan ?: false,
+        glutenFree = this.glutenFree ?: false,
+        readyInMinutes = this.readyInMinutes.toString() + "min."
     )
 }
 
@@ -52,16 +53,5 @@ fun ExtendedIngredientsItem.toUIModel(): RecipeIngredientsUIModel {
         ingredientId = this.id ?: 0,
         image = if (this.image.isNullOrEmpty()) "" else BuildConfig.BASE_IMAGE_URL + this.image,
         name = this.nameClean ?: ""
-    )
-}
-
-fun RecipeUIModel.toWidgetModel(
-//    widgetCategory: String
-): RecipeWidgetModel {
-    return RecipeWidgetModel(
-        id = this.id,
-        title = this.title,
-        image = this.image,
-//        widgetCategory = widgetCategory
     )
 }

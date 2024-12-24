@@ -19,7 +19,7 @@ class ListingViewModel(
     private val repository: RecipeRepository
 ) : ViewModel() {
 
-    val screenType = savedStateHandle.toRoute<ListingRoute>().screenType
+    private val screenType = savedStateHandle.toRoute<ListingRoute>().screenType
 
     private val _uiState = MutableStateFlow(HomeScreenUIStateModel())
     val uiState: StateFlow<HomeScreenUIStateModel> = _uiState.asStateFlow()
@@ -57,7 +57,8 @@ class ListingViewModel(
         return allRecipes.filterNotNull().filter { recipe ->
             when (screenType) {
                 ScreenType.VEGAN -> recipe.vegan
-                ScreenType.MEAT -> recipe.vegetarian.not()
+                ScreenType.MEAT -> !recipe.vegetarian
+                ScreenType.GLUTEN_FREE -> recipe.glutenFree
                 else -> true
             }
         }
