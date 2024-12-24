@@ -29,6 +29,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.aslibayar.foody.components.image_view.CustomImageView
 import com.aslibayar.foody.components.loading.CustomLoading
 import com.aslibayar.foody.components.quickaccess.QuickAccess
+import com.aslibayar.foody.components.widget.RecipeWidget
+import com.aslibayar.foody.components.widget.RecipeWidgetComponentModel
 import com.aslibayar.foody.ui.listing.ScreenType
 import com.aslibayar.foody.ui.theme.CustomTextStyle
 import org.koin.androidx.compose.koinViewModel
@@ -50,6 +52,10 @@ fun HomeScreen(
                 .background(Color.White)
         ) {
             QuickAccess(onQuickAccessClick = onQuickAccessClick)
+            RecipeWidget(
+                model = RecipeWidgetComponentModel(recipes = recipeList.recipes),
+                openListScreen = {},
+                onRecipeClick = {})
             LazyColumn(
                 Modifier
                     .fillMaxSize()
