@@ -95,17 +95,15 @@ data class RecipesItem(
 //    @SerialName("analyzedInstructions")
 //    val analyzedInstructions: List<AnalyzedInstructionsItem?>? = null,
 //
-//    @SerialName("glutenFree")
-//    val glutenFree: Boolean? = null,
+    @SerialName("glutenFree")
+    val glutenFree: Boolean? = null,
 //
 //    @SerialName("veryPopular")
 //    val veryPopular: Boolean? = null,
 //
 //    @SerialName("healthScore")
 //    val healthScore: Int? = null,
-//
-//
-//
+
 //    @SerialName("diets")
 //    val diets: List<String?>? = null,
 //
@@ -115,8 +113,8 @@ data class RecipesItem(
 //    @SerialName("creditsText")
 //    val creditsText: String? = null,
 //
-//    @SerialName("readyInMinutes")
-//    val readyInMinutes: Int? = null,
+    @SerialName("readyInMinutes")
+    val readyInMinutes: Int? = null,
 //
 //    @SerialName("sourceUrl")
 //    val sourceUrl: String? = null,
@@ -129,9 +127,7 @@ data class RecipesItem(
 //
     @SerialName("vegetarian")
     val vegetarian: Boolean? = null,
-//
-//
-//
+
     @SerialName("preparationMinutes")
     val preparationMinutes: Double? = null,
 //
