@@ -55,3 +55,11 @@ fun ExtendedIngredientsItem.toUIModel(): RecipeIngredientsUIModel {
         name = this.nameClean ?: ""
     )
 }
+
+fun RecipeDetailUIModel.toFavoriteRecipeEntity(): com.aslibayar.data.local.entity.FavoriteRecipeEntity {
+    return com.aslibayar.data.local.entity.FavoriteRecipeEntity(
+        id = this.id,
+        title = this.title,
+        image = this.image,
+    )
+}

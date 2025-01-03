@@ -20,7 +20,8 @@ data class RecipeDetailUIModel(
     val sourceUrl: String,
     val diets: List<String> = emptyList(),
     val time: String,
-    val servings: String
+    val servings: String,
+    val isFavorite: Boolean = false
 )
 
 data class RecipeIngredientsUIModel(

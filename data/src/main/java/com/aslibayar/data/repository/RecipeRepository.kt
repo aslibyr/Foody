@@ -1,5 +1,8 @@
 package com.aslibayar.data.repository
 
+import com.aslibayar.data.local.AppDatabase
+import com.aslibayar.data.local.entity.FavoriteRecipeEntity
+import com.aslibayar.data.mapper.toFavoriteRecipeEntity
 import com.aslibayar.data.mapper.toUIModel
 import com.aslibayar.data.model.BaseUIModel
 import com.aslibayar.data.model.RecipeDetailUIModel
@@ -9,7 +12,10 @@ import com.aslibayar.network.RecipesApiServiceImp
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class RecipeRepository(private val recipesApiServiceImp: RecipesApiServiceImp) {
+class RecipeRepository(
+    private val recipesApiServiceImp: RecipesApiServiceImp,
+    private val appDatabase: AppDatabase
+) {
 
     fun getRandomRecipes(): Flow<BaseUIModel<List<RecipeUIModel?>>> {
         return flow {
@@ -52,6 +58,18 @@ class RecipeRepository(private val recipesApiServiceImp: RecipesApiServiceImp) {
                 }
             }
         }
+    }
+
+    suspend fun addRecipeToFavorite(recipe: RecipeDetailUIModel) {
+        appDatabase.favoriteRecipes().insertFavoriteRecipe(recipe.toFavoriteRecipeEntity())
+    }
+
+    fun removeRecipeFromFavorite(recipe: RecipeDetailUIModel) {
+        appDatabase.favoriteRecipes().removeFavoriteRecipe(recipe.id.toString())
+    }
+
+    fun getFavoriteRecipes(): Flow<List<FavoriteRecipeEntity>> {
+        return appDatabase.favoriteRecipes().getFavoriteRecipes()
     }
 
     fun autoComplete(query: String): Flow<BaseUIModel<List<String>>> {
