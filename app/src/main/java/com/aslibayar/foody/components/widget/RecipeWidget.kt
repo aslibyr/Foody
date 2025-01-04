@@ -109,6 +109,7 @@ fun RecipeWidgetItem(
 ) {
     Card(
         modifier = Modifier
+            .width(width)
             .wrapContentSize()
             .background(Color.White)
             .clickable {

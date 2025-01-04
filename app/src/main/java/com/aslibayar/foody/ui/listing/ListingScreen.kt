@@ -3,6 +3,7 @@ package com.aslibayar.foody.ui.listing
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -39,47 +40,53 @@ fun ListingScreen(
     if (uiState.isLoading) {
         CustomLoading()
     } else {
-        LazyColumn(
-            Modifier
+        Column(
+            modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 10.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
+                .padding(vertical = 16.dp)
         ) {
-            items(uiState.recipes) { recipe ->
-                ListItem(
-                    modifier = Modifier
-                        .clickable {
-                            openRecipeDetailScreen(recipe?.id ?: 0)
-                        }
-                        .shadow(elevation = 10.dp, shape = RoundedCornerShape(12.dp))
-                        .clip(RoundedCornerShape(12.dp))
-                        .fillMaxWidth(),
-                    headlineContent = {
-                        recipe?.let {
-                            Text(
-                                it.title,
-                                style = CustomTextStyle.regularBlackLarge
-                            )
-                        }
-                    },
-                    leadingContent = {
-                        Box(
-                            modifier = Modifier
-                                .wrapContentSize()
-                                .shadow(elevation = 10.dp, shape = RoundedCornerShape(8.dp))
-                                .clip(RoundedCornerShape(8.dp))
-                        ) {
-                            recipe?.image?.let {
-                                CustomImageView(
-                                    imageUrl = it, modifier = Modifier
-                                        .height(80.dp)
-                                        .width(100.dp), contentScale = ContentScale.Crop
+            LazyColumn(
+                Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 10.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                items(uiState.recipes) { recipe ->
+                    ListItem(
+                        modifier = Modifier
+                            .clickable {
+                                openRecipeDetailScreen(recipe?.id ?: 0)
+                            }
+                            .shadow(elevation = 10.dp, shape = RoundedCornerShape(12.dp))
+                            .clip(RoundedCornerShape(12.dp))
+                            .fillMaxWidth(),
+                        headlineContent = {
+                            recipe?.let {
+                                Text(
+                                    it.title,
+                                    style = CustomTextStyle.regularBlackLarge
                                 )
                             }
-                        }
-                    },
-                    colors = ListItemDefaults.colors(containerColor = Color.White)
-                )
+                        },
+                        leadingContent = {
+                            Box(
+                                modifier = Modifier
+                                    .wrapContentSize()
+                                    .shadow(elevation = 10.dp, shape = RoundedCornerShape(8.dp))
+                                    .clip(RoundedCornerShape(8.dp))
+                            ) {
+                                recipe?.image?.let {
+                                    CustomImageView(
+                                        imageUrl = it, modifier = Modifier
+                                            .height(80.dp)
+                                            .width(100.dp), contentScale = ContentScale.Crop
+                                    )
+                                }
+                            }
+                        },
+                        colors = ListItemDefaults.colors(containerColor = Color.White)
+                    )
+                }
             }
         }
     }
