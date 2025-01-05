@@ -65,7 +65,7 @@ fun HomeScreen(
                     recipes = recipeList.recipes.shuffled().filter { it?.glutenFree ?: false },
                     widgetCategory = "Gluten Free"
                 ),
-                openListScreen = { onQuickAccessClick(ScreenType.TODAY) },
+                openListScreen = { onQuickAccessClick(ScreenType.GLUTEN_FREE) },
                 openRecipeDetailScreen = openRecipeDetailScreen
             )
         }

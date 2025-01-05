@@ -2,6 +2,7 @@ package com.aslibayar.foody.components.textfield
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -21,7 +22,6 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.aslibayar.foody.ui.theme.LightOrange
 import com.aslibayar.foody.ui.theme.Orange
 
 
@@ -64,9 +64,12 @@ fun CustomOutlinedTextField(
                 Icon(
                     imageVector = Icons.Outlined.Close,
                     contentDescription = "",
-                    modifier = Modifier.clickable {
-                        returnText("")
-                    })
+                    modifier = Modifier
+                        .clickable {
+                            returnText("")
+                        }
+                        .padding(end = 4.dp)
+                )
             }
         },
         isError = !errorMessage.isNullOrEmpty(),
@@ -90,14 +93,15 @@ fun CustomOutlinedTextField(
         ),
         colors = TextFieldDefaults.colors(
             focusedIndicatorColor = Orange,
-            unfocusedIndicatorColor = Orange,
+            unfocusedIndicatorColor = Color.Gray,
             focusedContainerColor = Color.White,
             unfocusedContainerColor = Color.White,
             focusedLabelColor = Orange,
-            unfocusedLabelColor = LightOrange,
+            unfocusedLabelColor = Color.Gray,
             cursorColor = Orange,
             focusedTextColor = Color.Black,
-            unfocusedTextColor = Color.Black
+            unfocusedTextColor = Color.Black,
+            focusedTrailingIconColor = Color.Gray
         ),
         shape = RoundedCornerShape(30.dp),
         maxLines = 1,

@@ -63,7 +63,7 @@ fun BottomBar(
         AnimatedVisibility(visible = isBottomBarVisible) {
             NavigationBar(
                 containerColor = Color.White,
-                modifier = Modifier.height(100.dp)
+                modifier = Modifier.height(110.dp)
             ) {
                 items.forEach { item ->
                     NavigationBarItem(

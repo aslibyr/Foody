@@ -108,14 +108,16 @@ fun SearchScreen(
                 Icon(
                     imageVector = Icons.Outlined.Search,
                     contentDescription = "",
-                    Modifier.size(50.dp)
+                    Modifier.size(50.dp),
+                    tint = Color.Gray
                 )
                 Text(
                     modifier = Modifier
                         .padding(vertical = 8.dp),
                     text = "Search something to start.",
                     fontStyle = FontStyle.Italic,
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.Gray
                 )
             }
 
