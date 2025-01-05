@@ -43,7 +43,7 @@ fun RecipeDetailResponse.toUIModel(): RecipeDetailUIModel {
         extendedIngredients = extendedIngredients,
         sourceUrl = this.sourceUrl ?: "",
         diets = this.diets ?: emptyList(),
-        time = (this.readyInMinutes.toString() + " min."),
+        time = (this.readyInMinutes.toString() + " mins."),
         servings = this.servings.toString()
     )
 }

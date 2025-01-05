@@ -28,6 +28,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -37,6 +38,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.aslibayar.data.model.BaseUIModel
 import com.aslibayar.data.model.RecipeDetailUIModel
 import com.aslibayar.data.model.RecipeIngredientsUIModel
+import com.aslibayar.foody.R
 import com.aslibayar.foody.components.html_text.HtmlText
 import com.aslibayar.foody.components.image_view.CustomImageView
 import com.aslibayar.foody.components.loading.CustomLoading
@@ -70,13 +72,10 @@ fun RecipeDetailScreen(
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun StatelessRecipeDetail(
-    modifier: Modifier = Modifier,
-    recipe: RecipeDetailUIModel,
-    onBackClick: () -> Unit
+    modifier: Modifier = Modifier, recipe: RecipeDetailUIModel, onBackClick: () -> Unit
 ) {
     Box(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier = Modifier.fillMaxSize()
     ) {
         CustomImageView(imageUrl = recipe.image, modifier = Modifier.fillMaxWidth())
 
@@ -86,8 +85,7 @@ fun StatelessRecipeDetail(
                 .verticalScroll(rememberScrollState())
                 .padding(top = 180.dp)
                 .shadow(
-                    elevation = 10.dp,
-                    shape = RoundedCornerShape(topStart = 60.dp, topEnd = 60.dp)
+                    elevation = 10.dp, shape = RoundedCornerShape(topStart = 60.dp, topEnd = 60.dp)
                 )
                 .clip(RoundedCornerShape(topStart = 60.dp, topEnd = 60.dp))
                 .background(Color.White),
@@ -96,7 +94,7 @@ fun StatelessRecipeDetail(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(60.dp)
-                    .background(color = Orange),
+                    .background(color = Color.White),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
@@ -105,12 +103,30 @@ fun StatelessRecipeDetail(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 8.dp, horizontal = 32.dp),
-                    color = Color.White,
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.Bold,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     style = CustomTextStyle.regularBlackXLarge
+                )
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(color = Color.White),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                IconWithText(
+                    iconId = R.drawable.clock,
+                    text = recipe.time,
+                    modifier = Modifier.padding(10.dp)
+                )
+                IconWithText(
+                    iconId = R.drawable.serving,
+                    text = "${recipe.servings} servings",
+                    modifier = Modifier.padding(10.dp)
                 )
             }
             Column(
@@ -121,29 +137,8 @@ fun StatelessRecipeDetail(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                if (recipe.time.isNotEmpty() && recipe.servings.isNotEmpty()) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        if (recipe.time.isNotEmpty()) {
-                            Text(
-                                "Preperation time: " + recipe.time,
-                                style = CustomTextStyle.regularBlackSmall
-                            )
-                        }
-                        if (recipe.servings.isNotEmpty()) {
-                            Text(
-                                "Servings: " + recipe.servings,
-                                style = CustomTextStyle.regularBlackSmall
-                            )
-                        }
-                    }
-                }
                 HtmlText(
-                    html = recipe.summary,
-                    textStyle = CustomTextStyle.regularBlackMedium
+                    html = recipe.summary, textStyle = CustomTextStyle.regularBlackMedium
                 )
                 if (recipe.diets.isNotEmpty()) {
                     FlowRow(
@@ -157,8 +152,7 @@ fun StatelessRecipeDetail(
                             Box(
                                 modifier = Modifier
                                     .clip(RoundedCornerShape(20.dp))
-                                    .background(LightOrange),
-                                contentAlignment = Alignment.Center
+                                    .background(LightOrange), contentAlignment = Alignment.Center
                             ) {
                                 Text(
                                     text = it.lowercase().split(" ")
@@ -184,16 +178,15 @@ fun StatelessRecipeDetail(
                         )
                     }
                     HtmlText(
-                        html = recipe.instructions,
-                        textStyle = CustomTextStyle.regularBlackMedium
+                        html = recipe.instructions, textStyle = CustomTextStyle.regularBlackMedium
                     )
                 }
             }
             Text(
                 "Ingredients",
-                style = CustomTextStyle.regularBlackLarge, color = Orange,
-                modifier = Modifier
-                    .padding(horizontal = 10.dp)
+                style = CustomTextStyle.regularBlackLarge,
+                color = Orange,
+                modifier = Modifier.padding(10.dp)
             )
             FlowRow(modifier = Modifier.padding(vertical = 16.dp)) {
                 recipe.extendedIngredients.distinctBy { it.name }.forEach {
@@ -202,8 +195,7 @@ fun StatelessRecipeDetail(
             }
             Spacer(modifier = Modifier.height(30.dp))
         }
-        Icon(
-            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+        Icon(imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
             "",
             modifier = Modifier
                 .padding(10.dp)
@@ -212,7 +204,27 @@ fun StatelessRecipeDetail(
                 }
                 .size(32.dp)
                 .shadow(50.dp),
-            tint = Color.White
+            tint = Color.White)
+    }
+}
+
+@Composable
+fun IconWithText(iconId: Int, text: String, modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            painter = painterResource(id = iconId),
+            contentDescription = null,
+            modifier = Modifier.size(14.dp),
+            tint = Color.Gray
+        )
+        Text(
+            text,
+            style = CustomTextStyle.regularBlackMedium,
+            color = Color.Gray,
+            modifier = Modifier.padding(start = 4.dp)
         )
     }
 }

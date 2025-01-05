@@ -37,7 +37,7 @@ class CustomTextStyle {
 
         val regularBlackXLarge = TextStyle(
             fontSize = 18.sp,
-            fontFamily = Type.dosisExtraBold,
+            fontFamily = Type.dosisBold,
 //            color = primaryBlack,
         )
         val regularOrangeSmall = TextStyle(
