@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -12,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.aslibayar.foody.components.loading.CustomLoading
+import com.aslibayar.foody.components.quickaccess.QuickAccess
 import com.aslibayar.foody.components.widget.RecipeWidget
 import com.aslibayar.foody.components.widget.RecipeWidgetComponentModel
 import com.aslibayar.foody.ui.listing.ScreenType
@@ -31,11 +34,11 @@ fun HomeScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .verticalScroll(rememberScrollState())
                 .background(Color.White)
                 .padding(horizontal = 10.dp, vertical = 10.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-
             RecipeWidget(
                 model = RecipeWidgetComponentModel(
                     recipes = recipeList.recipes.shuffled().take(5),
@@ -47,10 +50,20 @@ fun HomeScreen(
                 openRecipeDetailScreen = openRecipeDetailScreen
             )
 
+            QuickAccess(onQuickAccessClick = onQuickAccessClick)
+
             RecipeWidget(
                 model = RecipeWidgetComponentModel(
                     recipes = recipeList.recipes,
                     widgetCategory = "All Recipes"
+                ),
+                openListScreen = { onQuickAccessClick(ScreenType.TODAY) },
+                openRecipeDetailScreen = openRecipeDetailScreen
+            )
+            RecipeWidget(
+                model = RecipeWidgetComponentModel(
+                    recipes = recipeList.recipes.shuffled().filter { it?.glutenFree ?: false },
+                    widgetCategory = "Gluten Free"
                 ),
                 openListScreen = { onQuickAccessClick(ScreenType.TODAY) },
                 openRecipeDetailScreen = openRecipeDetailScreen

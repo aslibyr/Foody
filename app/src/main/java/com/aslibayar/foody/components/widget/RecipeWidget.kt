@@ -116,7 +116,7 @@ fun RecipeWidgetItem(
                 onRecipeClick(recipe.id)
             }
             .padding(8.dp)
-            .shadow(elevation = 10.dp, shape = RoundedCornerShape(12.dp))
+            .shadow(elevation = 8.dp, shape = RoundedCornerShape(12.dp))
             .clip(RoundedCornerShape(12.dp)),
         elevation = CardDefaults.cardElevation(),
     ) {
