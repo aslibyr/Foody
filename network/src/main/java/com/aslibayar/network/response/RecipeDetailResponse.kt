@@ -13,7 +13,7 @@ data class RecipeDetailResponse(
     val sustainable: Boolean? = null,
 
     @SerialName("analyzedInstructions")
-    val analyzedInstructions: List<AnalyzedInstructionsItem?>? = null,
+    val analyzedInstructions: List<AnalyzedInstructionsItem>? = null,
 
     @SerialName("glutenFree")
     val glutenFree: Boolean? = null,
