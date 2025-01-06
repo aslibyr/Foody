@@ -16,9 +16,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -27,25 +24,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.aslibayar.data.model.BaseUIModel
 import com.aslibayar.data.model.RecipeDetailUIModel
-import com.aslibayar.data.model.RecipeIngredientsUIModel
-import com.aslibayar.foody.R
+import com.aslibayar.foody.components.button.BackButton
 import com.aslibayar.foody.components.html_text.HtmlText
 import com.aslibayar.foody.components.image_view.CustomImageView
 import com.aslibayar.foody.components.loading.CustomLoading
-import com.aslibayar.foody.noRippleClick
+import com.aslibayar.foody.ui.detail.components.Ingredients.IngredientsSection
+import com.aslibayar.foody.ui.detail.components.info.InfoSection
+import com.aslibayar.foody.ui.detail.components.instructions.InstructionSection
 import com.aslibayar.foody.ui.theme.CustomTextStyle
 import com.aslibayar.foody.ui.theme.LightOrange
-import com.aslibayar.foody.ui.theme.Orange
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -111,28 +105,12 @@ fun StatelessRecipeDetail(
                 )
             }
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(color = Color.White),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                IconWithText(
-                    iconId = R.drawable.clock,
-                    text = recipe.time,
-                    modifier = Modifier.padding(10.dp)
-                )
-                IconWithText(
-                    iconId = R.drawable.serving,
-                    text = "${recipe.servings} servings",
-                    modifier = Modifier.padding(10.dp)
-                )
-            }
+            InfoSection(recipe = recipe)
+
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 10.dp)
+                    .padding(horizontal = 14.dp)
                     .padding(top = 10.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -164,98 +142,18 @@ fun StatelessRecipeDetail(
                         }
                     }
                 }
-
+                if (recipe.extendedIngredients.isNotEmpty()) {
+                    IngredientsSection(recipe = recipe)
+                }
                 if (recipe.instructions.isNotEmpty()) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Start
-                    ) {
-                        Text(
-                            text = "Instructions",
-                            color = Orange,
-                            style = CustomTextStyle.regularBlackLarge
-                        )
-                    }
-                    HtmlText(
-                        html = recipe.instructions, textStyle = CustomTextStyle.regularBlackMedium
-                    )
+                    InstructionSection(recipe = recipe)
+                    Spacer(modifier = Modifier.size(30.dp))
                 }
             }
-            Text(
-                "Ingredients",
-                style = CustomTextStyle.regularBlackLarge,
-                color = Orange,
-                modifier = Modifier.padding(10.dp)
-            )
-            FlowRow(modifier = Modifier.padding(vertical = 16.dp)) {
-                recipe.extendedIngredients.distinctBy { it.name }.forEach {
-                    IngredientsItem(item = it)
-                }
-            }
-            Spacer(modifier = Modifier.height(30.dp))
         }
-        Icon(imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-            "",
-            modifier = Modifier
-                .padding(10.dp)
-                .noRippleClick {
-                    onBackClick()
-                }
-                .size(32.dp)
-                .shadow(50.dp),
-            tint = Color.White)
+        BackButton { onBackClick() }
     }
 }
 
-@Composable
-fun IconWithText(iconId: Int, text: String, modifier: Modifier = Modifier) {
-    Row(
-        modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            painter = painterResource(id = iconId),
-            contentDescription = null,
-            modifier = Modifier.size(14.dp),
-            tint = Color.Gray
-        )
-        Text(
-            text,
-            style = CustomTextStyle.regularBlackMedium,
-            color = Color.Gray,
-            modifier = Modifier.padding(start = 4.dp)
-        )
-    }
-}
 
-@Composable
-fun IngredientsItem(modifier: Modifier = Modifier, item: RecipeIngredientsUIModel) {
-    if (item.name.isNotEmpty() || (item.image.isNotEmpty())) {
-        Column(
-            modifier
-                .fillMaxWidth(0.33f)
-                .padding(4.dp)
-                .noRippleClick {
 
-                },
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            CustomImageView(
-                imageUrl = item.image,
-                modifier = Modifier
-                    .size(80.dp)
-                    .clip(RoundedCornerShape(8.dp)),
-                contentScale = ContentScale.Fit,
-            )
-            Text(
-                modifier = Modifier.padding(8.dp),
-                text = item.name.lowercase().split(" ")
-                    .joinToString(" ") { word -> word.replaceFirstChar { it.uppercase() } },
-                fontSize = 12.sp,
-                textAlign = TextAlign.Center,
-            )
-        }
-    }
-}
