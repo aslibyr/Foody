@@ -18,21 +18,23 @@ import com.aslibayar.foody.ui.theme.Orange
 
 @Composable
 fun InstructionSection(recipe: RecipeDetailUIModel) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Start
-    ) {
-        Text(
-            text = "Instructions",
-            color = Orange,
-            style = CustomTextStyle.regularBlackLarge
+    if (recipe.instructions.isNotEmpty()) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start
+        ) {
+            Text(
+                text = "Instructions",
+                color = Orange,
+                style = CustomTextStyle.regularBlackLarge
+            )
+        }
+        InstructionSteps(
+            instructions = recipe.analyzedInstructions.firstOrNull()?.steps
+                ?: emptyList()
         )
     }
-    InstructionSteps(
-        instructions = recipe.analyzedInstructions.firstOrNull()?.steps
-            ?: emptyList()
-    )
 }
 
 @Composable

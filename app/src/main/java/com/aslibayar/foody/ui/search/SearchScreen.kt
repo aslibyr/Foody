@@ -42,10 +42,10 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.aslibayar.foody.components.autocomplete.AutoCompleteComponent
 import com.aslibayar.foody.components.image_view.CustomImageView
-import com.aslibayar.foody.components.textfield.CustomOutlinedTextField
 import com.aslibayar.foody.noRippleClick
+import com.aslibayar.foody.ui.search.components.autocomplete.AutoCompleteComponent
+import com.aslibayar.foody.ui.search.components.textfield.CustomOutlinedTextField
 import com.aslibayar.foody.ui.theme.CustomTextStyle
 import org.koin.androidx.compose.koinViewModel
 

@@ -1,4 +1,4 @@
-package com.aslibayar.foody.components.widget
+package com.aslibayar.foody.ui.home.components.widget
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

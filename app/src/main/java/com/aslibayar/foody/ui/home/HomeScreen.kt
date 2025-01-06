@@ -14,9 +14,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.aslibayar.foody.components.loading.CustomLoading
-import com.aslibayar.foody.components.quickaccess.QuickAccess
-import com.aslibayar.foody.components.widget.RecipeWidget
-import com.aslibayar.foody.components.widget.RecipeWidgetComponentModel
+import com.aslibayar.foody.ui.home.components.quickaccess.QuickAccess
+import com.aslibayar.foody.ui.home.components.widget.RecipeWidget
+import com.aslibayar.foody.ui.home.components.widget.RecipeWidgetComponentModel
 import com.aslibayar.foody.ui.listing.ScreenType
 import org.koin.androidx.compose.koinViewModel
 

@@ -4,19 +4,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -24,9 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.aslibayar.data.model.BaseUIModel
@@ -37,9 +29,10 @@ import com.aslibayar.foody.components.image_view.CustomImageView
 import com.aslibayar.foody.components.loading.CustomLoading
 import com.aslibayar.foody.ui.detail.components.Ingredients.IngredientsSection
 import com.aslibayar.foody.ui.detail.components.info.InfoSection
+import com.aslibayar.foody.ui.detail.components.info.TagsSection
+import com.aslibayar.foody.ui.detail.components.info.TitleSection
 import com.aslibayar.foody.ui.detail.components.instructions.InstructionSection
 import com.aslibayar.foody.ui.theme.CustomTextStyle
-import com.aslibayar.foody.ui.theme.LightOrange
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -63,7 +56,6 @@ fun RecipeDetailScreen(
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun StatelessRecipeDetail(
     modifier: Modifier = Modifier, recipe: RecipeDetailUIModel, onBackClick: () -> Unit
@@ -72,7 +64,6 @@ fun StatelessRecipeDetail(
         modifier = Modifier.fillMaxSize()
     ) {
         CustomImageView(imageUrl = recipe.image, modifier = Modifier.fillMaxWidth())
-
         Column(
             modifier = modifier
                 .fillMaxSize()
@@ -84,29 +75,8 @@ fun StatelessRecipeDetail(
                 .clip(RoundedCornerShape(topStart = 60.dp, topEnd = 60.dp))
                 .background(Color.White),
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(60.dp)
-                    .background(color = Color.White),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = recipe.title,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp, horizontal = 32.dp),
-                    textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Bold,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    style = CustomTextStyle.regularBlackXLarge
-                )
-            }
-
-            InfoSection(recipe = recipe)
-
+            TitleSection(recipe)
+            InfoSection(recipe)
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -118,37 +88,10 @@ fun StatelessRecipeDetail(
                 HtmlText(
                     html = recipe.summary, textStyle = CustomTextStyle.regularBlackMedium
                 )
-                if (recipe.diets.isNotEmpty()) {
-                    FlowRow(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 16.dp),
-                        horizontalArrangement = Arrangement.spacedBy(10.dp),
-                        verticalArrangement = Arrangement.spacedBy(10.dp)
-                    ) {
-                        recipe.diets.forEach {
-                            Box(
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(20.dp))
-                                    .background(LightOrange), contentAlignment = Alignment.Center
-                            ) {
-                                Text(
-                                    text = it.lowercase().split(" ")
-                                        .joinToString(" ") { word -> word.replaceFirstChar { it.uppercase() } },
-                                    modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp),
-                                    style = CustomTextStyle.regularBlackMedium
-                                )
-                            }
-                        }
-                    }
-                }
-                if (recipe.extendedIngredients.isNotEmpty()) {
-                    IngredientsSection(recipe = recipe)
-                }
-                if (recipe.instructions.isNotEmpty()) {
-                    InstructionSection(recipe = recipe)
-                    Spacer(modifier = Modifier.size(30.dp))
-                }
+                TagsSection(recipe)
+                IngredientsSection(recipe)
+                InstructionSection(recipe)
+                Spacer(modifier = Modifier.size(30.dp))
             }
         }
         BackButton { onBackClick() }

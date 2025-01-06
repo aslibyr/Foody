@@ -1,4 +1,4 @@
-package com.aslibayar.foody.components.textfield
+package com.aslibayar.foody.ui.search.components.textfield
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable

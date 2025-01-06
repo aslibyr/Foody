@@ -1,4 +1,4 @@
-package com.aslibayar.foody.components.quickaccess
+package com.aslibayar.foody.ui.home.components.quickaccess
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
