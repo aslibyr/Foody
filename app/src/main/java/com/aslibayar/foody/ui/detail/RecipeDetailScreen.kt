@@ -1,5 +1,6 @@
 package com.aslibayar.foody.ui.detail
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,17 +14,19 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.aslibayar.data.model.BaseUIModel
 import com.aslibayar.data.model.RecipeDetailUIModel
 import com.aslibayar.foody.components.button.BackButton
+import com.aslibayar.foody.components.button.FavoriteButton
 import com.aslibayar.foody.components.html_text.HtmlText
 import com.aslibayar.foody.components.image_view.CustomImageView
 import com.aslibayar.foody.components.loading.CustomLoading
@@ -37,28 +40,49 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun RecipeDetailScreen(
-    viewModel: RecipeDetailViewModel = koinViewModel(), onBackClick: () -> Unit
+    viewModel: RecipeDetailViewModel = koinViewModel(),
+    onBackClick: () -> Unit
 ) {
-    val recipe by viewModel.recipe.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        when (recipe) {
-            is BaseUIModel.Error -> {}
-            BaseUIModel.Loading -> {
-                CustomLoading()
+    // Event collection
+    LaunchedEffect(Unit) {
+        viewModel.event.collect { event ->
+            when (event) {
+                is RecipeDetailEvent.ShowToast -> {
+                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                }
             }
+        }
+    }
 
-            is BaseUIModel.Success -> {
-                val recipeData = (recipe as BaseUIModel.Success<RecipeDetailUIModel>).data
-                StatelessRecipeDetail(recipe = recipeData, onBackClick = onBackClick)
-            }
+    when (uiState) {
+        is RecipeDetailUiState.Loading -> CustomLoading()
+        is RecipeDetailUiState.Error -> {
+
+            // ErrorScreen((uiState as RecipeDetailUiState.Error).message)
+        }
+
+        is RecipeDetailUiState.Success -> {
+            val state = uiState as RecipeDetailUiState.Success
+            StatelessRecipeDetail(
+                recipe = state.recipe,
+                isFavorite = state.isFavorite,
+                onBackClick = onBackClick,
+                onFavoriteClick = viewModel::toggleFavorite
+            )
         }
     }
 }
 
 @Composable
 fun StatelessRecipeDetail(
-    modifier: Modifier = Modifier, recipe: RecipeDetailUIModel, onBackClick: () -> Unit
+    modifier: Modifier = Modifier,
+    recipe: RecipeDetailUIModel,
+    isFavorite: Boolean,
+    onBackClick: () -> Unit,
+    onFavoriteClick: () -> Unit
 ) {
     Box(
         modifier = Modifier.fillMaxSize()
@@ -68,7 +92,7 @@ fun StatelessRecipeDetail(
             modifier = modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(top = 180.dp)
+                .padding(top = 210.dp)
                 .shadow(
                     elevation = 10.dp, shape = RoundedCornerShape(topStart = 60.dp, topEnd = 60.dp)
                 )
@@ -94,7 +118,14 @@ fun StatelessRecipeDetail(
                 Spacer(modifier = Modifier.size(30.dp))
             }
         }
-        BackButton { onBackClick() }
+        FavoriteButton(
+            isFavorite = isFavorite,
+            onClick = onFavoriteClick,
+            modifier = Modifier.align(Alignment.TopEnd)
+        )
+        BackButton(
+            onBackClick = onBackClick
+        )
     }
 }
 

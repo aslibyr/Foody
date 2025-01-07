@@ -36,7 +36,7 @@ fun RecipeIngredientsItem(modifier: Modifier = Modifier, item: RecipeIngredients
             CustomImageView(
                 imageUrl = item.image,
                 modifier = Modifier
-                    .size(80.dp)
+                    .size(50.dp)
                     .clip(RoundedCornerShape(8.dp)),
                 contentScale = ContentScale.Fit,
             )

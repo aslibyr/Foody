@@ -9,8 +9,10 @@ import com.aslibayar.data.model.RecipeDetailUIModel
 import com.aslibayar.data.model.RecipeUIModel
 import com.aslibayar.network.NetworkResult
 import com.aslibayar.network.RecipesApiServiceImp
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.withContext
 
 class RecipeRepository(
     private val recipesApiServiceImp: RecipesApiServiceImp,
@@ -64,8 +66,12 @@ class RecipeRepository(
         appDatabase.favoriteRecipes().insertFavoriteRecipe(recipe.toFavoriteRecipeEntity())
     }
 
-    fun removeRecipeFromFavorite(recipe: RecipeDetailUIModel) {
+    suspend fun removeRecipeFromFavorite(recipe: RecipeDetailUIModel) {
         appDatabase.favoriteRecipes().removeFavoriteRecipe(recipe.id.toString())
+    }
+
+    suspend fun isFavorite(recipeId: Int): Boolean = withContext(Dispatchers.IO) {
+        appDatabase.favoriteRecipes().getFavoriteRecipe(recipeId.toString()) != null
     }
 
     fun getFavoriteRecipes(): Flow<List<FavoriteRecipeEntity>> {

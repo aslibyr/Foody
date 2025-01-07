@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.aslibayar.data.model.RecipeDetailUIModel
 import com.aslibayar.foody.R
 import com.aslibayar.foody.ui.theme.CustomTextStyle
@@ -59,6 +60,7 @@ fun IconWithText(iconId: Int, text: String, modifier: Modifier = Modifier) {
         Text(
             text,
             style = CustomTextStyle.regularBlackMedium,
+            fontSize = 12.sp,
             color = Color.Gray,
             modifier = Modifier.padding(start = 4.dp)
         )

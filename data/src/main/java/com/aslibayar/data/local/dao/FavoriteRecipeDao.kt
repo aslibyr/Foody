@@ -18,6 +18,6 @@ interface FavoriteRecipeDao {
     @Query("SELECT * FROM favorite_recipes")
     fun getFavoriteRecipes(): Flow<List<FavoriteRecipeEntity>>
 
-    @Query("DELETE FROM favorite_recipes Where id = :id")
-    fun removeFavoriteRecipe(id: String)
+    @Query("DELETE FROM favorite_recipes WHERE id = :id")
+    suspend fun removeFavoriteRecipe(id: String)
 }
