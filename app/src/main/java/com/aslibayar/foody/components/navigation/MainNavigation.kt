@@ -72,11 +72,16 @@ fun MainNavigation(
             })
         }
 
-        composable<ListingRoute> {
-            ListingScreen(openRecipeDetailScreen = {
-                val route = RecipeDetailRoute(it)
-                navController.navigate(route)
-            })
+        composable<ListingRoute> { route ->
+            ListingScreen(
+                openRecipeDetailScreen = {
+                    val detailRoute = RecipeDetailRoute(it)
+                    navController.navigate(detailRoute)
+                },
+                onBackClick = {
+                    navController.popBackStack()
+                }
+            )
         }
 
         composable<RecipeDetailRoute> {

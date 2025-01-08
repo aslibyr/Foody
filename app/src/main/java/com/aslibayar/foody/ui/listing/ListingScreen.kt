@@ -1,90 +1,181 @@
 package com.aslibayar.foody.ui.listing
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ListItem
-import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.aslibayar.data.model.RecipeUIModel
+import com.aslibayar.foody.R
+import com.aslibayar.foody.components.button.ListResetButton
 import com.aslibayar.foody.components.image_view.CustomImageView
 import com.aslibayar.foody.components.loading.CustomLoading
+import com.aslibayar.foody.components.topbar.TopBarComponent
 import com.aslibayar.foody.ui.theme.CustomTextStyle
+import com.aslibayar.foody.ui.theme.Gray
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ListingScreen(
     viewModel: ListingViewModel = koinViewModel(),
     openRecipeDetailScreen: (recipeId: Int) -> Unit,
+    onBackClick: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val gridState = rememberLazyGridState()
+    val scope = rememberCoroutineScope()
 
-    if (uiState.isLoading) {
-        CustomLoading()
-    } else {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(vertical = 16.dp)
-        ) {
-            LazyColumn(
-                Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 10.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                items(uiState.recipes) { recipe ->
-                    ListItem(
-                        modifier = Modifier
-                            .clickable {
-                                openRecipeDetailScreen(recipe?.id ?: 0)
-                            }
-                            .shadow(elevation = 10.dp, shape = RoundedCornerShape(12.dp))
-                            .clip(RoundedCornerShape(12.dp))
-                            .fillMaxWidth(),
-                        headlineContent = {
-                            recipe?.let {
-                                Text(
-                                    it.title,
-                                    style = CustomTextStyle.regularBlackLarge
-                                )
-                            }
-                        },
-                        leadingContent = {
-                            Box(
-                                modifier = Modifier
-                                    .wrapContentSize()
-                                    .shadow(elevation = 10.dp, shape = RoundedCornerShape(8.dp))
-                                    .clip(RoundedCornerShape(8.dp))
-                            ) {
-                                recipe?.image?.let {
-                                    CustomImageView(
-                                        imageUrl = it, modifier = Modifier
-                                            .height(80.dp)
-                                            .width(100.dp), contentScale = ContentScale.Crop
-                                    )
+    val showResetButton by remember {
+        derivedStateOf {
+            gridState.firstVisibleItemIndex > 6
+        }
+    }
+
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .background(Color.White)) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            TopBarComponent(
+                title = uiState.screenType.widgetType,
+                showBackButton = true,
+                onBackClick = onBackClick
+            )
+
+            if (uiState.isLoading) {
+                CustomLoading()
+            } else {
+                LazyVerticalGrid(
+                    state = gridState, // Grid state'i ekledik
+                    columns = GridCells.Fixed(2),
+                    contentPadding = PaddingValues(16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    items(uiState.recipes) { recipe ->
+                        recipe?.let {
+                            RecipeItem(
+                                recipe = it,
+                                onRecipeClick = { recipeId ->
+                                    viewModel.onEvent(ListingEvent.OpenRecipeDetail(recipeId))
                                 }
-                            }
-                        },
-                        colors = ListItemDefaults.colors(containerColor = Color.White)
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
+        AnimatedVisibility(
+            visible = showResetButton,
+            enter = fadeIn() + slideInVertically(),
+            exit = fadeOut() + slideOutVertically()
+        ) {
+            if (showResetButton) {
+                ListResetButton {
+                    scope.launch {
+                        gridState.animateScrollToItem(0)
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun RecipeItem(
+    recipe: RecipeUIModel,
+    onRecipeClick: (Int) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable { onRecipeClick(recipe.id) }
+            .shadow(elevation = 8.dp, shape = RoundedCornerShape(12.dp))
+            .clip(RoundedCornerShape(12.dp)),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
+    ) {
+        Column {
+            CustomImageView(
+                imageUrl = recipe.image,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(140.dp),
+                contentScale = ContentScale.Crop
+            )
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+            ) {
+                Text(
+                    text = recipe.title,
+                    style = CustomTextStyle.regularBlackMedium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(id = R.drawable.clock),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(16.dp)
+                            .padding(end = 4.dp),
+                        tint = MaterialTheme.colorScheme.secondary
+                    )
+                    Text(
+                        text = recipe.readyInMinutes,
+                        style = CustomTextStyle.regularBlackMedium,
+                        color = Gray,
+                        fontSize = 12.sp
                     )
                 }
             }

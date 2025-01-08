@@ -13,4 +13,4 @@ object SearchRoute
 data class RecipeDetailRoute(val recipeId: Int)
 
 @Serializable
-data class ListingRoute(val screenType: ScreenType)
+data class ListingRoute(val screenType: ScreenType = ScreenType.TODAY)
