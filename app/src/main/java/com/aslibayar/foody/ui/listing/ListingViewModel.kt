@@ -82,7 +82,6 @@ class ListingViewModel(
         return when (uiState.value.screenType) {
             ScreenType.VEGAN -> recipes.filter { it?.vegan == true }
             ScreenType.GLUTEN_FREE -> recipes.filter { it?.glutenFree == true }
-            ScreenType.MEAT -> recipes.filter { it?.vegetarian == false }
             else -> recipes
         }
     }

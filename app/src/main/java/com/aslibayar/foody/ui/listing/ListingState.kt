@@ -26,7 +26,6 @@ enum class ScreenType(val widgetType: String) {
     FAVORITE("Favorite"),
     RECENT("Recent"),
     VEGAN("Vegan"),
-    MEAT("Meat"),
     GLUTEN_FREE("Gluten Free"),
     TODAY("Today's Special")
 }
