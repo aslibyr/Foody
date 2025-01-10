@@ -1,11 +1,6 @@
 package com.aslibayar.foody.ui.listing
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.background
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,6 +23,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -39,6 +35,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -63,21 +60,33 @@ fun ListingScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val gridState = rememberLazyGridState()
-    val scope = rememberCoroutineScope()
+    val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     val showResetButton by remember {
         derivedStateOf {
-            gridState.firstVisibleItemIndex > 6
+            gridState.firstVisibleItemIndex > 0
         }
     }
 
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .background(Color.White)) {
+    LaunchedEffect(Unit) {
+        viewModel.effect.collect { effect ->
+            when (effect) {
+                is ListingEffect.ShowError -> {
+                    Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
+                }
+
+                is ListingEffect.NavigateToDetail -> {
+                    openRecipeDetailScreen(effect.recipeId)
+                }
+            }
+        }
+    }
+
+    Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
             TopBarComponent(
                 title = uiState.screenType.widgetType,
-                showBackButton = true,
                 onBackClick = onBackClick
             )
 
@@ -85,7 +94,7 @@ fun ListingScreen(
                 CustomLoading()
             } else {
                 LazyVerticalGrid(
-                    state = gridState, // Grid state'i ekledik
+                    state = gridState,
                     columns = GridCells.Fixed(2),
                     contentPadding = PaddingValues(16.dp),
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -105,22 +114,16 @@ fun ListingScreen(
                 }
             }
         }
-
-        AnimatedVisibility(
-            visible = showResetButton,
-            enter = fadeIn() + slideInVertically(),
-            exit = fadeOut() + slideOutVertically()
-        ) {
-            if (showResetButton) {
-                ListResetButton {
-                    scope.launch {
-                        gridState.animateScrollToItem(0)
-                    }
+        if (showResetButton) {
+            ListResetButton {
+                coroutineScope.launch {
+                    gridState.animateScrollToItem(0)
                 }
             }
         }
     }
 }
+
 
 @Composable
 fun RecipeItem(

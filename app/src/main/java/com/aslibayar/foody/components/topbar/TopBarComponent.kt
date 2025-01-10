@@ -1,65 +1,70 @@
 package com.aslibayar.foody.components.topbar
 
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.aslibayar.foody.heightPercent
 import com.aslibayar.foody.ui.theme.CustomTextStyle
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBarComponent(
     title: String,
     onBackClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    showBackButton: Boolean = true
 ) {
-    TopAppBar(
-        title = {
-            Box(
-                modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = title,
-                    style = CustomTextStyle.regularBlackLarge,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+    val configuration = LocalConfiguration.current
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.White)
+            .padding(horizontal = 16.dp)
+            .height(
+                heightPercent(
+                    0.06f,
+                    configuration = configuration
                 )
-            }
-        },
-        navigationIcon = {
-            if (showBackButton) {
-                IconButton(onClick = onBackClick) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Back",
-                        tint = MaterialTheme.colorScheme.onSurface,
-                    )
-                }
-            }
-        },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color.White,
-            titleContentColor = MaterialTheme.colorScheme.onSurface
-        ),
-        modifier = modifier
-            .shadow(elevation = 4.dp)
-            .height(56.dp)
-    )
-} 
+            ),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier.weight(7f),
+        ) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft, "",
+                modifier = Modifier
+                    .size(30.dp)
+                    .clickable {
+                        onBackClick()
+                    }
+                    .height(IntrinsicSize.Min),
+                tint = Color.Black
+            )
+        }
+        Text(
+            text = title,
+            modifier = Modifier.fillMaxWidth(0.90f),
+            style = CustomTextStyle.regularBlackLarge,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+    }
+}

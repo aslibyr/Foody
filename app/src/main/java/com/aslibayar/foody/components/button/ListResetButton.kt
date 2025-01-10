@@ -28,7 +28,7 @@ fun BoxScope.ListResetButton(
     Card(
         shape = RoundedCornerShape(50.dp),
         modifier = Modifier
-            .padding(bottom = 16.dp, end = 16.dp)
+            .padding(bottom = 60.dp, end = 16.dp)
             .align(Alignment.BottomEnd)
             .width(48.dp)
             .height(48.dp)
