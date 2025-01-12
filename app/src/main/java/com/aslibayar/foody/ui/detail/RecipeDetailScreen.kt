@@ -85,7 +85,9 @@ fun StatelessRecipeDetail(
     onFavoriteClick: () -> Unit
 ) {
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White)
     ) {
         CustomImageView(imageUrl = recipe.image, modifier = Modifier.fillMaxWidth())
         Column(
@@ -94,7 +96,8 @@ fun StatelessRecipeDetail(
                 .verticalScroll(rememberScrollState())
                 .padding(top = 210.dp)
                 .shadow(
-                    elevation = 10.dp, shape = RoundedCornerShape(topStart = 60.dp, topEnd = 60.dp)
+                    elevation = 10.dp,
+                    shape = RoundedCornerShape(topStart = 60.dp, topEnd = 60.dp)
                 )
                 .clip(RoundedCornerShape(topStart = 60.dp, topEnd = 60.dp))
                 .background(Color.White),
