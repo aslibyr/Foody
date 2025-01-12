@@ -72,23 +72,22 @@ fun RecipeWidget(
             )
 
             if (showViewAll) {
-                Row {
-                    Text(
-                        text = "View all",
-                        style = CustomTextStyle.regularBlackMedium
-                    )
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                        contentDescription = "",
-                        modifier = Modifier
-                            .size(30.dp)
-                            .padding(start = 8.dp),
-                        tint = MaterialTheme.colorScheme.secondary
-                    )
-                }
+                Text(
+                    text = "View all",
+                    style = CustomTextStyle.regularBlackMedium
+                )
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                    contentDescription = "",
+                    modifier = Modifier
+                        .size(30.dp)
+                        .padding(start = 8.dp),
+                    tint = MaterialTheme.colorScheme.secondary
+                )
+
             }
         }
-        
+
         LazyRow(
             Modifier.fillMaxWidth(),
         ) {

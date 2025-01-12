@@ -12,7 +12,6 @@ import com.aslibayar.network.NetworkResult
 import com.aslibayar.network.RecipesApiServiceImp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -27,41 +26,40 @@ class RecipeRepository(
         emit(BaseUIModel.Loading)
 
         try {
-            // Önce local'den kontrol et
-            val lastUpdateTime = appDatabase.dailyRecipes().getLastUpdateTime()
-            val shouldFetchFromNetwork = shouldFetchNewRecipes(lastUpdateTime)
+            // API'den tüm tarifleri al
+            when (val response = recipesApiServiceImp.getRecipeList()) {
+                is NetworkResult.Success -> {
+                    val allRecipes = response.data.recipes?.map { it?.toUIModel() } ?: emptyList()
 
-            if (shouldFetchFromNetwork) {
-                when (val response = recipesApiServiceImp.getRecipeList()) {
-                    is NetworkResult.Success -> {
-                        val allRecipes =
-                            response.data.recipes?.map { it?.toUIModel() } ?: emptyList()
-                        val todaysSpecial =
-                            allRecipes.take(5) // İlk 5 tarifi Today's Special için ayır
+                    // Today's Special için ilk 5 tarifi kaydet
+                    val lastUpdateTime = appDatabase.dailyRecipes().getLastUpdateTime()
+                    val shouldUpdateTodaysSpecial = shouldFetchNewRecipes(lastUpdateTime)
 
-                        // Today's Special tariflerini kaydet
+                    if (shouldUpdateTodaysSpecial) {
+                        val todaysSpecial = allRecipes.take(5)
                         saveDailyRecipes(todaysSpecial.filterNotNull())
-
-                        emit(BaseUIModel.Success(allRecipes))
                     }
 
-                    is NetworkResult.Error -> {
-                        emit(BaseUIModel.Error("Network error"))
-                    }
+                    // Tüm tarifleri emit et
+                    emit(BaseUIModel.Success(allRecipes))
                 }
-            } else {
-                // Today's Special tarifleri local'den göster
-                val localRecipes = appDatabase.dailyRecipes().getDailyRecipes()
-                    .map { entities -> entities.map { it.toUIModel() } }
 
-                emitAll(localRecipes.map { BaseUIModel.Success(it) })
+                is NetworkResult.Error -> {
+                    emit(BaseUIModel.Error("Network error"))
+                }
             }
         } catch (e: Exception) {
             emit(BaseUIModel.Error(e.message ?: "Unknown error"))
         }
     }
 
-    private fun shouldFetchNewRecipes(lastUpdateTime: Long?): Boolean {
+    // Today's Special tarifleri için ayrı flow
+    fun getTodaysSpecialRecipes(): Flow<List<RecipeUIModel>> {
+        return appDatabase.dailyRecipes().getDailyRecipes()
+            .map { entities -> entities.map { it.toUIModel() } }
+    }
+
+    private suspend fun shouldFetchNewRecipes(lastUpdateTime: Long?): Boolean {
         if (lastUpdateTime == null) return true
         val currentTime = System.currentTimeMillis()
         return (currentTime - lastUpdateTime) >= TWENTY_FOUR_HOURS
@@ -75,17 +73,10 @@ class RecipeRepository(
                     title = recipe.title,
                     image = recipe.image,
                     time = recipe.readyInMinutes,
-
-                    )
+                )
             }
             appDatabase.dailyRecipes().clearDailyRecipes()
             appDatabase.dailyRecipes().insertDailyRecipes(entities)
-        }
-
-    // Today's Special tarifleri için ayrı bir fonksiyon
-    fun getTodaysSpecialRecipes(): Flow<List<RecipeUIModel>> {
-        return appDatabase.dailyRecipes().getDailyRecipes()
-            .map { entities -> entities.map { it.toUIModel() } }
     }
 
     fun getRecipeDetail(recipeId: Int): Flow<BaseUIModel<RecipeDetailUIModel>> {

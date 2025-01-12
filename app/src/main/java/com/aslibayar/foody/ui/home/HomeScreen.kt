@@ -59,7 +59,7 @@ fun HomeScreen(
                     recipes = recipeList.recipes,
                     widgetCategory = "All Recipes"
                 ),
-                openListScreen = { onQuickAccessClick(ScreenType.TODAY) },
+                openListScreen = { onQuickAccessClick(ScreenType.ALL) },
                 openRecipeDetailScreen = openRecipeDetailScreen
             )
             RecipeWidget(
