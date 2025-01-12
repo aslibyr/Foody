@@ -48,6 +48,7 @@ import com.aslibayar.foody.components.button.ListResetButton
 import com.aslibayar.foody.components.image_view.CustomImageView
 import com.aslibayar.foody.components.loading.CustomLoading
 import com.aslibayar.foody.components.topbar.TopBarComponent
+import com.aslibayar.foody.ui.common.EmptyScreen
 import com.aslibayar.foody.ui.theme.CustomTextStyle
 import com.aslibayar.foody.ui.theme.Gray
 import kotlinx.coroutines.launch
@@ -97,11 +98,38 @@ fun ListingScreen(
 
             if (uiState.isLoading) {
                 CustomLoading()
+            } else if (uiState.recipes.isEmpty()) {
+                when (uiState.screenType) {
+                    ScreenType.FAVORITE -> EmptyScreen(
+                        icon = R.drawable.heart,
+                        title = "No Favorite Recipes Yet",
+                    )
+
+                    ScreenType.VEGAN -> EmptyScreen(
+                        icon = R.drawable.vegan,
+                        title = "No Vegan Recipes Found",
+                    )
+
+                    ScreenType.GLUTEN_FREE -> EmptyScreen(
+                        icon = R.drawable.gluten_free,
+                        title = "No Gluten-Free Recipes Found",
+                    )
+
+                    else -> EmptyScreen(
+                        icon = R.drawable.search,
+                        title = "No Recipes Found",
+                    )
+                }
             } else {
                 LazyVerticalGrid(
                     state = gridState,
                     columns = GridCells.Fixed(2),
-                    contentPadding = PaddingValues(16.dp),
+                    contentPadding = PaddingValues(
+                        start = 16.dp,
+                        end = 16.dp,
+                        top = 16.dp,
+                        bottom = 80.dp
+                    ),
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                     modifier = Modifier.fillMaxSize()
