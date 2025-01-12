@@ -1,6 +1,7 @@
 package com.aslibayar.foody.ui.listing
 
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -83,7 +84,11 @@ fun ListingScreen(
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White)
+    ) {
         Column(modifier = Modifier.fillMaxSize()) {
             TopBarComponent(
                 title = uiState.screenType.widgetType,

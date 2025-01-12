@@ -9,5 +9,5 @@ import org.koin.dsl.module
 val provideDataModule = module {
     includes(provideNetworkModule)
     single { RecipeRepository(get(), get()) }
-    single { AppDatabase.getDatabase(androidContext()) }
+    single { AppDatabase.getInstance(androidContext()) }
 }

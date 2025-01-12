@@ -8,4 +8,5 @@ data class RecipeUIModel(
     val vegan: Boolean = false,
     val glutenFree: Boolean = false,
     val readyInMinutes: String = "",
+    val isFavorite: Boolean = false
 )

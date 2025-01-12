@@ -9,4 +9,5 @@ data class FavoriteRecipeEntity(
     val id: Int = 0,
     val title: String,
     val image: String,
+    val time: String
 )

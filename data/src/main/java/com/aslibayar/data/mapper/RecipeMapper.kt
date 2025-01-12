@@ -98,5 +98,6 @@ fun RecipeDetailUIModel.toFavoriteRecipeEntity(): com.aslibayar.data.local.entit
         id = this.id,
         title = this.title,
         image = this.image,
+        time = this.time
     )
 }

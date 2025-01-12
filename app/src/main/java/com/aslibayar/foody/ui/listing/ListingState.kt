@@ -1,12 +1,15 @@
 package com.aslibayar.foody.ui.listing
 
+import com.aslibayar.data.model.RecipeDetailUIModel
 import com.aslibayar.data.model.RecipeUIModel
 
 // UI State
 data class ListingUIState(
     val recipes: List<RecipeUIModel?> = emptyList(),
     val isLoading: Boolean = false,
-    val screenType: ScreenType = ScreenType.TODAY
+    val screenType: ScreenType = ScreenType.TODAY,
+    val favMovies: List<RecipeUIModel> = emptyList(),
+    val isRemoved: Boolean = false
 )
 
 // UI Events
@@ -14,6 +17,7 @@ sealed interface ListingEvent {
     data class ChangeScreenType(val screenType: ScreenType) : ListingEvent
     data object GetRecipes : ListingEvent
     data class OpenRecipeDetail(val recipeId: Int) : ListingEvent
+    data class ToggleFavorite(val recipe: RecipeDetailUIModel) : ListingEvent
 }
 
 // UI Effects (one-time events)

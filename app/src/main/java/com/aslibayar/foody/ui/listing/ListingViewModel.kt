@@ -23,14 +23,21 @@ class ListingViewModel(
         screenType = savedStateHandle.get<ScreenType>("screenType") ?: ScreenType.TODAY
     )
 
-    private val _uiState = MutableStateFlow(ListingUIState(screenType = route.screenType))
+    private companion object {
+        const val ERROR_MESSAGE = "Bir hata oluştu"
+    }
+
+    private val _uiState = MutableStateFlow<ListingUIState>(
+        ListingUIState(screenType = route.screenType)
+    )
     val uiState = _uiState.asStateFlow()
 
     private val _effect = Channel<ListingEffect>()
     val effect = _effect.receiveAsFlow()
 
     init {
-        onEvent(ListingEvent.GetRecipes)
+        getRecipeList()
+        observeFavorites()
     }
 
     fun onEvent(event: ListingEvent) {
@@ -49,6 +56,42 @@ class ListingViewModel(
                     _effect.send(ListingEffect.NavigateToDetail(event.recipeId))
                 }
             }
+
+            is ListingEvent.ToggleFavorite -> {
+                viewModelScope.launch {
+                    try {
+                        if (repository.isFavorite(event.recipe.id)) {
+                            repository.removeRecipeFromFavorite(event.recipe)
+                        } else {
+                            repository.addRecipeToFavorite(event.recipe)
+                        }
+                    } catch (e: Exception) {
+                        _effect.send(ListingEffect.ShowError("Favori işlemi başarısız oldu"))
+                    }
+                }
+            }
+        }
+    }
+
+    private fun observeFavorites() {
+        viewModelScope.launch {
+            repository.getFavoriteRecipes().collect { favorites ->
+                if (route.screenType == ScreenType.FAVORITE) {
+                    _uiState.update {
+                        it.copy(
+                            recipes = favorites.map { favorite ->
+                                RecipeUIModel(
+                                    id = favorite.id,
+                                    title = favorite.title,
+                                    image = favorite.image,
+                                    isFavorite = true,
+                                    readyInMinutes = favorite.time,
+                                )
+                            }
+                        )
+                    }
+                }
+            }
         }
     }
 
@@ -59,19 +102,27 @@ class ListingViewModel(
                     is BaseUIModel.Loading -> {
                         _uiState.update { it.copy(isLoading = true) }
                     }
-
                     is BaseUIModel.Success -> {
+                        val recipesWithFavorites = result.data.map { recipe ->
+                            recipe?.id?.let {
+                                repository.isFavorite(it)
+                            }?.let {
+                                recipe.copy(
+                                    isFavorite = it
+                                )
+                            }
+                        }
+                        
                         _uiState.update {
                             it.copy(
                                 isLoading = false,
-                                recipes = filterRecipes(result.data)
+                                recipes = filterRecipes(recipesWithFavorites)
                             )
                         }
                     }
-
                     is BaseUIModel.Error -> {
                         _uiState.update { it.copy(isLoading = false) }
-                        _effect.send(ListingEffect.ShowError("Bir hata oluştu"))
+                        _effect.send(ListingEffect.ShowError(ERROR_MESSAGE))
                     }
                 }
             }
@@ -79,9 +130,29 @@ class ListingViewModel(
     }
 
     private fun filterRecipes(recipes: List<RecipeUIModel?>): List<RecipeUIModel?> {
-        return when (uiState.value.screenType) {
+        return when (route.screenType) {
             ScreenType.VEGAN -> recipes.filter { it?.vegan == true }
             ScreenType.GLUTEN_FREE -> recipes.filter { it?.glutenFree == true }
+            ScreenType.FAVORITE -> {
+                viewModelScope.launch {
+                    repository.getFavoriteRecipes().collect { favorites ->
+                        _uiState.update {
+                            it.copy(
+                                recipes = favorites.map { favorite ->
+                                    RecipeUIModel(
+                                        id = favorite.id,
+                                        title = favorite.title,
+                                        image = favorite.image,
+                                        isFavorite = true,
+                                        readyInMinutes = favorite.time,
+                                    )
+                                }
+                            )
+                        }
+                    }
+                }
+                emptyList() // Geçici olarak boş liste döndür, çünkü gerçek veriler Flow üzerinden gelecek
+            }
             else -> recipes
         }
     }
