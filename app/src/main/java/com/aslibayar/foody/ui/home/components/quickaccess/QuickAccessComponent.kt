@@ -72,7 +72,7 @@ fun QuickAccess(onQuickAccessClick: (ScreenType) -> Unit) {
             QuickAccessItem(
                 icon = ImageVector.vectorResource(R.drawable.gluten_free),
                 title = "Gluten Free",
-                screenType = ScreenType.VEGAN,
+                screenType = ScreenType.GLUTEN_FREE,
                 onItemClick = onQuickAccessClick
             )
         }
