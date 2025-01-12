@@ -45,12 +45,12 @@ import com.aslibayar.foody.ui.theme.Gray
 @Composable
 fun RecipeWidget(
     model: RecipeWidgetComponentModel,
-    openListScreen: () -> Unit,
+    openListScreen: () -> Unit = {},
     openRecipeDetailScreen: (recipeId: Int) -> Unit,
     itemWidth: Dp = 150.dp,
     itemHeight: Dp = 120.dp,
+    showViewAll: Boolean = true
 ) {
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -61,7 +61,7 @@ fun RecipeWidget(
                 .fillMaxWidth()
                 .height(30.dp)
                 .padding(start = 16.dp)
-                .clickable { openListScreen() },
+                .then(if (showViewAll) Modifier.clickable { openListScreen() } else Modifier),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -70,19 +70,25 @@ fun RecipeWidget(
                 text = model.widgetCategory,
                 style = CustomTextStyle.regularBlackLarge
             )
-            Text(
-                text = "View all",
-                style = CustomTextStyle.regularBlackMedium
-            )
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                contentDescription = "",
-                modifier = Modifier
-                    .size(30.dp)
-                    .padding(start = 8.dp),
-                tint = MaterialTheme.colorScheme.secondary
-            )
+
+            if (showViewAll) {
+                Row {
+                    Text(
+                        text = "View all",
+                        style = CustomTextStyle.regularBlackMedium
+                    )
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                        contentDescription = "",
+                        modifier = Modifier
+                            .size(30.dp)
+                            .padding(start = 8.dp),
+                        tint = MaterialTheme.colorScheme.secondary
+                    )
+                }
+            }
         }
+        
         LazyRow(
             Modifier.fillMaxWidth(),
         ) {
@@ -165,4 +171,5 @@ fun RecipeWidgetItem(
         }
     }
 }
+
 

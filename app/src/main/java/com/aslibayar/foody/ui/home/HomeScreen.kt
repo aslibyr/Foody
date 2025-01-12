@@ -24,9 +24,10 @@ import org.koin.androidx.compose.koinViewModel
 fun HomeScreen(
     viewModel: HomeScreenViewModel = koinViewModel(),
     openRecipeDetailScreen: (recipeId: Int) -> Unit,
-    onQuickAccessClick: (ScreenType) -> Unit
+    onQuickAccessClick: (ScreenType) -> Unit,
 ) {
     val recipeList by viewModel.recipeList.collectAsStateWithLifecycle()
+    val todaysSpecialRecipes by viewModel.todaysSpecialRecipes.collectAsStateWithLifecycle()
 
     if (recipeList.isLoading) {
         CustomLoading()
@@ -39,15 +40,16 @@ fun HomeScreen(
                 .padding(horizontal = 10.dp, vertical = 10.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
+            // Today's Special widget
             RecipeWidget(
                 model = RecipeWidgetComponentModel(
-                    recipes = recipeList.recipes.shuffled().take(5),
-                    widgetCategory = "Today's Special"
+                    widgetCategory = "Today's Special",
+                    recipes = todaysSpecialRecipes
                 ),
                 itemWidth = 280.dp,
                 itemHeight = 200.dp,
-                openListScreen = { onQuickAccessClick(ScreenType.TODAY) },
-                openRecipeDetailScreen = openRecipeDetailScreen
+                openRecipeDetailScreen = openRecipeDetailScreen,
+                showViewAll = false // View All gizli
             )
 
             QuickAccess(onQuickAccessClick = onQuickAccessClick)

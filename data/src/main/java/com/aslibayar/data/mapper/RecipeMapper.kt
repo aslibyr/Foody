@@ -2,6 +2,7 @@ package com.aslibayar.data.mapper
 
 import RecipesItem
 import com.aslibayar.data.BuildConfig
+import com.aslibayar.data.local.entity.DailyRecipeEntity
 import com.aslibayar.data.model.AnalyzedInstruction
 import com.aslibayar.data.model.Equipment
 import com.aslibayar.data.model.Ingredient
@@ -101,3 +102,10 @@ fun RecipeDetailUIModel.toFavoriteRecipeEntity(): com.aslibayar.data.local.entit
         time = this.time
     )
 }
+
+fun DailyRecipeEntity.toUIModel() = RecipeUIModel(
+    id = id,
+    title = title,
+    image = image,
+    readyInMinutes = time
+)
