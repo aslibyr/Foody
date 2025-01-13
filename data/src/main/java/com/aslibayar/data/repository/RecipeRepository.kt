@@ -2,9 +2,9 @@ package com.aslibayar.data.repository
 
 import com.aslibayar.data.local.AppDatabase
 import com.aslibayar.data.local.entity.DailyRecipeEntity
-import com.aslibayar.data.local.entity.FavoriteRecipeEntity
 import com.aslibayar.data.local.entity.RecentRecipeEntity
 import com.aslibayar.data.mapper.toFavoriteRecipeEntity
+import com.aslibayar.data.mapper.toRecipeUIModel
 import com.aslibayar.data.mapper.toUIModel
 import com.aslibayar.data.model.BaseUIModel
 import com.aslibayar.data.model.RecipeDetailUIModel
@@ -78,17 +78,9 @@ class RecipeRepository(
     }
 
     fun getRecentRecipes(): Flow<List<RecipeUIModel>> {
-        return appDatabase.recentRecipes().getRecentRecipes()
-            .map { entities ->
-                entities.map { entity ->
-                    RecipeUIModel(
-                        id = entity.id,
-                        title = entity.title,
-                        image = entity.image,
-                        readyInMinutes = entity.time
-                    )
-                }
-            }
+        return appDatabase.recentRecipes()
+            .getRecentRecipes()
+            .map { entities -> entities.map { it.toRecipeUIModel() } }
     }
 
     private fun shouldFetchNewRecipes(lastUpdateTime: Long?): Boolean {
@@ -151,8 +143,10 @@ class RecipeRepository(
         appDatabase.favoriteRecipes().getFavoriteRecipe(recipeId.toString()) != null
     }
 
-    fun getFavoriteRecipes(): Flow<List<FavoriteRecipeEntity>> {
-        return appDatabase.favoriteRecipes().getFavoriteRecipes()
+    fun getFavoriteRecipes(): Flow<List<RecipeUIModel>> {
+        return appDatabase.favoriteRecipes()
+            .getFavoriteRecipes()
+            .map { entities -> entities.map { it.toRecipeUIModel() } }
     }
 
     fun autoComplete(query: String): Flow<BaseUIModel<List<String>>> {

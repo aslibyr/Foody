@@ -7,9 +7,7 @@ import com.aslibayar.data.model.RecipeUIModel
 data class ListingUIState(
     val recipes: List<RecipeUIModel?> = emptyList(),
     val isLoading: Boolean = false,
-    val screenType: ScreenType = ScreenType.TODAY,
-    val favMovies: List<RecipeUIModel> = emptyList(),
-    val isRemoved: Boolean = false
+    val screenType: ScreenType = ScreenType.TODAY
 )
 
 // UI Events

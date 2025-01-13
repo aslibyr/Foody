@@ -4,6 +4,7 @@ import RecipesItem
 import com.aslibayar.data.BuildConfig
 import com.aslibayar.data.local.entity.DailyRecipeEntity
 import com.aslibayar.data.local.entity.FavoriteRecipeEntity
+import com.aslibayar.data.local.entity.RecentRecipeEntity
 import com.aslibayar.data.model.AnalyzedInstruction
 import com.aslibayar.data.model.Equipment
 import com.aslibayar.data.model.Ingredient
@@ -95,18 +96,39 @@ fun ExtendedIngredientsItem.toUIModel(): RecipeIngredientsUIModel {
     )
 }
 
-fun RecipeDetailUIModel.toFavoriteRecipeEntity(): FavoriteRecipeEntity {
-    return FavoriteRecipeEntity(
-        id = this.id,
-        title = this.title,
-        image = this.image,
-        time = this.time
-    )
-}
+fun RecipeDetailUIModel.toFavoriteRecipeEntity() = FavoriteRecipeEntity(
+    id = id,
+    title = title,
+    image = image,
+    time = time
+)
 
 fun DailyRecipeEntity.toUIModel() = RecipeUIModel(
     id = id,
     title = title,
     image = image,
     readyInMinutes = time
+)
+
+fun FavoriteRecipeEntity.toRecipeUIModel() = RecipeUIModel(
+    id = id,
+    title = title,
+    image = image,
+    isFavorite = true,
+    readyInMinutes = time
+)
+
+//fun RecipeUIModel.toFavoriteRecipeEntity() = FavoriteRecipeEntity(
+//    id = id,
+//    title = title,
+//    image = image,
+//    time = readyInMinutes
+//) şuanlık sadece detay ekranından favoriye eklenip çıkarılabiliyor
+
+fun RecentRecipeEntity.toRecipeUIModel() = RecipeUIModel(
+    id = id,
+    title = title,
+    image = image,
+    readyInMinutes = time,
+    isFavorite = false // Recent olması favorite olduğu anlamına gelmez
 )
