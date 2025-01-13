@@ -28,7 +28,7 @@ class RecipeDetailViewModel(
     val event = _event.asSharedFlow()
 
     init {
-        getRecipeDetail(recipeId = recipeId)
+        getRecipeDetail(recipeId)
     }
 
     private fun getRecipeDetail(recipeId: Int) {
@@ -40,13 +40,15 @@ class RecipeDetailViewModel(
                     }
 
                     is BaseUIModel.Success -> {
+                        // Detay görüntülendiğinde recent'a ekle
+                        repository.addToRecentRecipes(result.data)
+                        
                         val isFavorite = repository.isFavorite(recipeId)
                         _uiState.value = RecipeDetailUiState.Success(
                             recipe = result.data,
                             isFavorite = isFavorite
                         )
                     }
-
                     is BaseUIModel.Error -> {
                         _uiState.value = RecipeDetailUiState.Error(
                             message = result.message

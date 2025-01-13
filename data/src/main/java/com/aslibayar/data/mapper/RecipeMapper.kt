@@ -3,6 +3,7 @@ package com.aslibayar.data.mapper
 import RecipesItem
 import com.aslibayar.data.BuildConfig
 import com.aslibayar.data.local.entity.DailyRecipeEntity
+import com.aslibayar.data.local.entity.FavoriteRecipeEntity
 import com.aslibayar.data.model.AnalyzedInstruction
 import com.aslibayar.data.model.Equipment
 import com.aslibayar.data.model.Ingredient
@@ -94,8 +95,8 @@ fun ExtendedIngredientsItem.toUIModel(): RecipeIngredientsUIModel {
     )
 }
 
-fun RecipeDetailUIModel.toFavoriteRecipeEntity(): com.aslibayar.data.local.entity.FavoriteRecipeEntity {
-    return com.aslibayar.data.local.entity.FavoriteRecipeEntity(
+fun RecipeDetailUIModel.toFavoriteRecipeEntity(): FavoriteRecipeEntity {
+    return FavoriteRecipeEntity(
         id = this.id,
         title = this.title,
         image = this.image,
