@@ -130,5 +130,5 @@ fun RecentRecipeEntity.toRecipeUIModel() = RecipeUIModel(
     title = title,
     image = image,
     readyInMinutes = time,
-    isFavorite = false // Recent olması favorite olduğu anlamına gelmez
+    isFavorite = false
 )
