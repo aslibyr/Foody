@@ -143,11 +143,38 @@ class ListingViewModel(
     }
 
     private fun handleLoading() {
-        _uiState.update { it.copy(isLoading = true) }
+        if (!_uiState.value.isRefreshing) {
+            _uiState.update { it.copy(isLoading = true) }
+        }
     }
 
     private suspend fun handleError() {
         _uiState.update { it.copy(isLoading = false) }
         _effect.send(ListingEffect.ShowError(ERROR_MESSAGE))
+    }
+
+    fun onPullToRefresh() {
+        viewModelScope.launch {
+            try {
+                _uiState.update { it.copy(isRefreshing = true) }
+                repository.getRandomRecipes()
+                    .collect { result ->
+                        when (result) {
+                            is BaseUIModel.Loading -> handleLoading()
+                            is BaseUIModel.Success -> {
+                                handleSuccess(result.data)
+                                _uiState.update { it.copy(isRefreshing = false) }
+                            }
+
+                            is BaseUIModel.Error -> {
+                                handleError()
+                                _uiState.update { it.copy(isRefreshing = false) }
+                            }
+                        }
+                    }
+            } catch (e: Exception) {
+                _uiState.update { it.copy(isRefreshing = false) }
+            }
+        }
     }
 }

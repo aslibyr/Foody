@@ -20,6 +20,7 @@ import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -47,6 +48,7 @@ import com.aslibayar.foody.R
 import com.aslibayar.foody.components.button.ListResetButton
 import com.aslibayar.foody.components.image_view.CustomImageView
 import com.aslibayar.foody.components.loading.CustomLoading
+import com.aslibayar.foody.components.pull_to_refresh.PullToRefreshBox
 import com.aslibayar.foody.components.topbar.TopBarComponent
 import com.aslibayar.foody.ui.common.EmptyScreen
 import com.aslibayar.foody.ui.theme.CustomTextStyle
@@ -54,6 +56,7 @@ import com.aslibayar.foody.ui.theme.Gray
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListingScreen(
     viewModel: ListingViewModel = koinViewModel(),
@@ -96,57 +99,64 @@ fun ListingScreen(
                 onBackClick = onBackClick
             )
 
-            if (uiState.isLoading) {
-                CustomLoading()
-            } else if (uiState.recipes.isEmpty()) {
-                when (uiState.screenType) {
-                    ScreenType.FAVORITE -> EmptyScreen(
-                        icon = R.drawable.heart,
-                        title = "No Favorite Recipes Yet",
-                    )
+            PullToRefreshBox(
+                isRefreshing = uiState.isRefreshing,
+                onRefresh = { viewModel.onPullToRefresh() },
+                modifier = Modifier.fillMaxSize()
+            ) {
+                if (uiState.isLoading) {
+                    CustomLoading()
+                } else if (uiState.recipes.isEmpty()) {
+                    when (uiState.screenType) {
+                        ScreenType.FAVORITE -> EmptyScreen(
+                            icon = R.drawable.heart,
+                            title = "No Favorite Recipes Yet",
+                        )
 
-                    ScreenType.VEGAN -> EmptyScreen(
-                        icon = R.drawable.vegan,
-                        title = "No Vegan Recipes Found",
-                    )
+                        ScreenType.VEGAN -> EmptyScreen(
+                            icon = R.drawable.vegan,
+                            title = "No Vegan Recipes Found",
+                        )
 
-                    ScreenType.GLUTEN_FREE -> EmptyScreen(
-                        icon = R.drawable.gluten_free,
-                        title = "No Gluten-Free Recipes Found",
-                    )
+                        ScreenType.GLUTEN_FREE -> EmptyScreen(
+                            icon = R.drawable.gluten_free,
+                            title = "No Gluten-Free Recipes Found",
+                        )
 
-                    else -> EmptyScreen(
-                        icon = R.drawable.search,
-                        title = "No Recipes Found",
-                    )
-                }
-            } else {
-                LazyVerticalGrid(
-                    state = gridState,
-                    columns = GridCells.Fixed(2),
-                    contentPadding = PaddingValues(
-                        start = 16.dp,
-                        end = 16.dp,
-                        top = 16.dp,
-                        bottom = 80.dp
-                    ),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    items(uiState.recipes) { recipe ->
-                        recipe?.let {
-                            RecipeItem(
-                                recipe = it,
-                                onRecipeClick = { recipeId ->
-                                    viewModel.onEvent(ListingEvent.OpenRecipeDetail(recipeId))
-                                }
-                            )
+                        else -> EmptyScreen(
+                            icon = R.drawable.search,
+                            title = "No Recipes Found",
+                        )
+                    }
+                } else {
+                    LazyVerticalGrid(
+                        state = gridState,
+                        columns = GridCells.Fixed(2),
+                        contentPadding = PaddingValues(
+                            start = 16.dp,
+                            end = 16.dp,
+                            top = 16.dp,
+                            bottom = 80.dp
+                        ),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        items(uiState.recipes) { recipe ->
+                            recipe?.let {
+                                RecipeItem(
+                                    recipe = it,
+                                    onRecipeClick = { recipeId ->
+                                        viewModel.onEvent(ListingEvent.OpenRecipeDetail(recipeId))
+                                    }
+                                )
+                            }
                         }
                     }
                 }
             }
         }
+
         if (showResetButton) {
             ListResetButton {
                 coroutineScope.launch {
