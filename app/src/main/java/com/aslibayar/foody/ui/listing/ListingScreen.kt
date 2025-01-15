@@ -1,6 +1,5 @@
 package com.aslibayar.foody.ui.listing
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -25,7 +24,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -37,7 +35,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -66,26 +63,16 @@ fun ListingScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val gridState = rememberLazyGridState()
     val coroutineScope = rememberCoroutineScope()
-    val context = LocalContext.current
-
     val showResetButton by remember {
         derivedStateOf {
             gridState.firstVisibleItemIndex > 0
         }
     }
-
-    LaunchedEffect(Unit) {
-        viewModel.effect.collect { effect ->
-            when (effect) {
-                is ListingEffect.ShowError -> {
-                    Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
-                }
-
-                is ListingEffect.NavigateToDetail -> {
-                    openRecipeDetailScreen(effect.recipeId)
-                }
-            }
-        }
+    val emptyScreenData = when (uiState.screenType) {
+        ScreenType.FAVORITE -> R.drawable.heart to "No Favorite Recipes Yet"
+        ScreenType.VEGAN -> R.drawable.vegan to "No Vegan Recipes Found"
+        ScreenType.GLUTEN_FREE -> R.drawable.gluten_free to "No Gluten-Free Recipes Found"
+        else -> R.drawable.search to "No Recipes Found"
     }
 
     Box(
@@ -107,27 +94,7 @@ fun ListingScreen(
                 if (uiState.isLoading) {
                     CustomLoading()
                 } else if (uiState.recipes.isEmpty()) {
-                    when (uiState.screenType) {
-                        ScreenType.FAVORITE -> EmptyScreen(
-                            icon = R.drawable.heart,
-                            title = "No Favorite Recipes Yet",
-                        )
-
-                        ScreenType.VEGAN -> EmptyScreen(
-                            icon = R.drawable.vegan,
-                            title = "No Vegan Recipes Found",
-                        )
-
-                        ScreenType.GLUTEN_FREE -> EmptyScreen(
-                            icon = R.drawable.gluten_free,
-                            title = "No Gluten-Free Recipes Found",
-                        )
-
-                        else -> EmptyScreen(
-                            icon = R.drawable.search,
-                            title = "No Recipes Found",
-                        )
-                    }
+                    EmptyScreen(icon = emptyScreenData.first, title = emptyScreenData.second)
                 } else {
                     LazyVerticalGrid(
                         state = gridState,
@@ -147,7 +114,7 @@ fun ListingScreen(
                                 RecipeItem(
                                     recipe = it,
                                     onRecipeClick = { recipeId ->
-                                        viewModel.onEvent(ListingEvent.OpenRecipeDetail(recipeId))
+                                        openRecipeDetailScreen(recipeId)
                                     }
                                 )
                             }
