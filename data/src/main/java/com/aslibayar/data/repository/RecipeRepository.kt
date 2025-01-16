@@ -4,6 +4,7 @@ import com.aslibayar.data.local.AppDatabase
 import com.aslibayar.data.local.entity.DailyRecipeEntity
 import com.aslibayar.data.local.entity.FavoriteRecipeEntity
 import com.aslibayar.data.mapper.toFavoriteRecipeEntity
+import com.aslibayar.data.mapper.toRecipeUIModel
 import com.aslibayar.data.mapper.toUIModel
 import com.aslibayar.data.model.BaseUIModel
 import com.aslibayar.data.model.RecipeDetailUIModel
@@ -77,7 +78,7 @@ class RecipeRepository(
             }
             appDatabase.dailyRecipes().clearDailyRecipes()
             appDatabase.dailyRecipes().insertDailyRecipes(entities)
-    }
+        }
 
     fun getRecipeDetail(recipeId: Int): Flow<BaseUIModel<RecipeDetailUIModel>> {
         return flow {
@@ -113,8 +114,9 @@ class RecipeRepository(
 
     suspend fun removeRecipeFromFavorite(recipe: RecipeDetailUIModel) =
         withContext(Dispatchers.IO) {
-        appDatabase.favoriteRecipes().removeFavoriteRecipe(recipe.id.toString())
-    }
+            appDatabase.favoriteRecipes().removeFavoriteRecipe(recipe.id.toString())
+        }
+
     suspend fun isFavorite(recipeId: Int): Boolean = withContext(Dispatchers.IO) {
         appDatabase.favoriteRecipes().getFavoriteRecipe(recipeId.toString()) != null
     }
@@ -132,6 +134,44 @@ class RecipeRepository(
                     val result = response.data.map { it.title ?: "" }
                     emit(BaseUIModel.Success(result))
                 }
+            }
+        }
+    }
+
+    fun getSimilarRecipesWithDetails(recipeId: Int): Flow<BaseUIModel<List<RecipeUIModel>>> {
+        return flow {
+            emit(BaseUIModel.Loading)
+            try {
+                when (val response = recipesApiServiceImp.getSimilarRecipes(recipeId)) {
+                    is NetworkResult.Success -> {
+                        val detailedRecipes = mutableListOf<RecipeUIModel>()
+
+                        response.data.forEach { similarRecipe ->
+                            similarRecipe.id?.let { id ->
+                                when (val detailResponse =
+                                    recipesApiServiceImp.getRecipeDetail(id)) {
+                                    is NetworkResult.Success -> {
+                                        val recipeWithImage =
+                                            similarRecipe.toRecipeUIModel(detailResponse.data.image)
+                                        detailedRecipes.add(recipeWithImage)
+                                    }
+
+                                    is NetworkResult.Error -> {
+                                        emit(BaseUIModel.Error("Error fetching similar recipes"))
+                                    }
+                                }
+                            }
+                        }
+
+                        emit(BaseUIModel.Success(detailedRecipes))
+                    }
+
+                    is NetworkResult.Error -> {
+                        emit(BaseUIModel.Error("Error fetching similar recipes"))
+                    }
+                }
+            } catch (e: Exception) {
+                emit(BaseUIModel.Error(e.message ?: "Unknown error"))
             }
         }
     }

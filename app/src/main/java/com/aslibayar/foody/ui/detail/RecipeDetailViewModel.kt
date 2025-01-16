@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.aslibayar.data.model.BaseUIModel
+import com.aslibayar.data.model.RecipeUIModel
 import com.aslibayar.data.repository.RecipeRepository
 import com.aslibayar.foody.RecipeDetailRoute
 import kotlinx.coroutines.Dispatchers
@@ -27,8 +28,12 @@ class RecipeDetailViewModel(
     private val _event = MutableSharedFlow<RecipeDetailEvent>()
     val event = _event.asSharedFlow()
 
+    private val _similarRecipes = MutableStateFlow<List<RecipeUIModel>>(emptyList())
+    val similarRecipes = _similarRecipes.asStateFlow()
+
     init {
         getRecipeDetail(recipeId = recipeId)
+        getSimilarRecipes()
     }
 
     private fun getRecipeDetail(recipeId: Int) {
@@ -51,6 +56,26 @@ class RecipeDetailViewModel(
                         _uiState.value = RecipeDetailUiState.Error(
                             message = result.message
                         )
+                    }
+                }
+            }
+        }
+    }
+
+    private fun getSimilarRecipes() {
+        viewModelScope.launch {
+            repository.getSimilarRecipesWithDetails(recipeId).collect { result ->
+                when (result) {
+                    is BaseUIModel.Success -> {
+                        _similarRecipes.value = result.data
+                    }
+
+                    is BaseUIModel.Error -> {
+                        // Hata durumunu handle et
+                    }
+
+                    is BaseUIModel.Loading -> {
+                        // Loading durumunu handle et
                     }
                 }
             }

@@ -13,6 +13,7 @@ import com.aslibayar.data.model.Step
 import com.aslibayar.network.response.ExtendedIngredientsItem
 import com.aslibayar.network.response.RecipeDetailResponse
 import com.aslibayar.network.response.ResultsItem
+import com.aslibayar.network.response.SimilarRecipeResponseItem
 
 fun RecipesItem.toUIModel(): RecipeUIModel {
     return RecipeUIModel(
@@ -82,6 +83,15 @@ fun RecipeDetailResponse.toUIModel(): RecipeDetailUIModel {
         time = (this.readyInMinutes.toString() + " mins."),
         servings = this.servings.toString(),
         analyzedInstructions = instructions
+    )
+}
+
+fun SimilarRecipeResponseItem.toRecipeUIModel(image: String?): RecipeUIModel {
+    return RecipeUIModel(
+        id = this.id ?: 0,
+        title = this.title ?: "",
+        image = image ?: "",
+        readyInMinutes = "${this.readyInMinutes ?: 0} min."
     )
 }
 

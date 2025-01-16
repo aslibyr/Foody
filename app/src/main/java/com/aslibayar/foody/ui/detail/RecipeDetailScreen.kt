@@ -1,5 +1,6 @@
 package com.aslibayar.foody.ui.detail
 
+import SimilarRecipesSection
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -25,6 +26,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.aslibayar.data.model.RecipeDetailUIModel
+import com.aslibayar.data.model.RecipeUIModel
 import com.aslibayar.foody.components.button.BackButton
 import com.aslibayar.foody.components.button.FavoriteButton
 import com.aslibayar.foody.components.html_text.HtmlText
@@ -41,10 +43,12 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun RecipeDetailScreen(
     viewModel: RecipeDetailViewModel = koinViewModel(),
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onRecipeClick: (Int) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    val similarRecipes by viewModel.similarRecipes.collectAsStateWithLifecycle()
 
     // Event collection
     LaunchedEffect(Unit) {
@@ -60,8 +64,8 @@ fun RecipeDetailScreen(
     when (uiState) {
         is RecipeDetailUiState.Loading -> CustomLoading()
         is RecipeDetailUiState.Error -> {
-
-            // ErrorScreen((uiState as RecipeDetailUiState.Error).message)
+            val state = uiState as RecipeDetailUiState.Error
+            Toast.makeText(context, state.message, Toast.LENGTH_SHORT).show()
         }
 
         is RecipeDetailUiState.Success -> {
@@ -70,7 +74,9 @@ fun RecipeDetailScreen(
                 recipe = state.recipe,
                 isFavorite = state.isFavorite,
                 onBackClick = onBackClick,
-                onFavoriteClick = viewModel::toggleFavorite
+                onFavoriteClick = viewModel::toggleFavorite,
+                similar = similarRecipes,
+                onRecipeClick = onRecipeClick
             )
         }
     }
@@ -80,9 +86,11 @@ fun RecipeDetailScreen(
 fun StatelessRecipeDetail(
     modifier: Modifier = Modifier,
     recipe: RecipeDetailUIModel,
+    similar: List<RecipeUIModel>,
     isFavorite: Boolean,
     onBackClick: () -> Unit,
-    onFavoriteClick: () -> Unit
+    onFavoriteClick: () -> Unit,
+    onRecipeClick: (Int) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -118,6 +126,12 @@ fun StatelessRecipeDetail(
                 TagsSection(recipe)
                 IngredientsSection(recipe)
                 InstructionSection(recipe)
+                SimilarRecipesSection(
+                    recipes = similar,
+                    onRecipeClick = { recipeId ->
+                        onRecipeClick(recipeId)
+                    }
+                )
                 Spacer(modifier = Modifier.size(30.dp))
             }
         }
