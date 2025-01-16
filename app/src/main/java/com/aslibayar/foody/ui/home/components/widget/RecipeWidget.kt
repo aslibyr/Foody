@@ -51,54 +51,56 @@ fun RecipeWidget(
     itemHeight: Dp = 120.dp,
     showViewAll: Boolean = true
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color.White),
-    ) {
-        Row(
+    if (model.recipes.isNotEmpty()) {
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(30.dp)
-                .padding(start = 16.dp)
-                .then(if (showViewAll) Modifier.clickable { openListScreen() } else Modifier),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+                .background(Color.White),
         ) {
-            Text(
-                modifier = Modifier.weight(1f),
-                text = model.widgetCategory,
-                style = CustomTextStyle.regularBlackLarge
-            )
-
-            if (showViewAll) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(30.dp)
+                    .padding(start = 16.dp)
+                    .then(if (showViewAll) Modifier.clickable { openListScreen() } else Modifier),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
                 Text(
-                    text = "View all",
-                    style = CustomTextStyle.regularBlackMedium
-                )
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                    contentDescription = "",
-                    modifier = Modifier
-                        .size(30.dp)
-                        .padding(start = 8.dp),
-                    tint = MaterialTheme.colorScheme.secondary
+                    modifier = Modifier.weight(1f),
+                    text = model.widgetCategory,
+                    style = CustomTextStyle.regularBlackLarge
                 )
 
-            }
-        }
-
-        LazyRow(
-            Modifier.fillMaxWidth(),
-        ) {
-            items(model.recipes) { recipe ->
-                recipe?.let {
-                    RecipeWidgetItem(
-                        recipe = it,
-                        width = itemWidth,
-                        height = itemHeight,
-                        onRecipeClick = { openRecipeDetailScreen(recipe.id) }
+                if (showViewAll) {
+                    Text(
+                        text = "View all",
+                        style = CustomTextStyle.regularBlackMedium
                     )
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                        contentDescription = "",
+                        modifier = Modifier
+                            .size(30.dp)
+                            .padding(start = 8.dp),
+                        tint = MaterialTheme.colorScheme.secondary
+                    )
+
+                }
+            }
+
+            LazyRow(
+                Modifier.fillMaxWidth(),
+            ) {
+                items(model.recipes) { recipe ->
+                    recipe?.let {
+                        RecipeWidgetItem(
+                            recipe = it,
+                            width = itemWidth,
+                            height = itemHeight,
+                            onRecipeClick = { openRecipeDetailScreen(recipe.id) }
+                        )
+                    }
                 }
             }
         }
@@ -170,5 +172,4 @@ fun RecipeWidgetItem(
         }
     }
 }
-
 
