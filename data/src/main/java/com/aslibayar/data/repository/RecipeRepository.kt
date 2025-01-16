@@ -2,7 +2,7 @@ package com.aslibayar.data.repository
 
 import com.aslibayar.data.local.AppDatabase
 import com.aslibayar.data.local.entity.DailyRecipeEntity
-import com.aslibayar.data.local.entity.FavoriteRecipeEntity
+import com.aslibayar.data.local.entity.RecentRecipeEntity
 import com.aslibayar.data.mapper.toFavoriteRecipeEntity
 import com.aslibayar.data.mapper.toRecipeUIModel
 import com.aslibayar.data.mapper.toUIModel
@@ -44,7 +44,6 @@ class RecipeRepository(
                     // Tüm tarifleri emit et
                     emit(BaseUIModel.Success(allRecipes))
                 }
-
                 is NetworkResult.Error -> {
                     emit(BaseUIModel.Error("Network error"))
                 }
@@ -60,7 +59,31 @@ class RecipeRepository(
             .map { entities -> entities.map { it.toUIModel() } }
     }
 
-    private suspend fun shouldFetchNewRecipes(lastUpdateTime: Long?): Boolean {
+    // Recent Recipes için metodlar
+    suspend fun addToRecentRecipes(recipe: RecipeDetailUIModel) {
+        withContext(Dispatchers.IO) {
+            val recentRecipe = RecentRecipeEntity(
+                id = recipe.id,
+                title = recipe.title,
+                image = recipe.image,
+                time = recipe.time
+            )
+            // Önce eski kaydı sil (varsa)
+            appDatabase.recentRecipes().deleteRecipeById(recipe.id)
+            // Yeni kaydı ekle
+            appDatabase.recentRecipes().insertRecentRecipe(recentRecipe)
+            // 10'dan fazla kayıt varsa en eski kaydı sil
+            appDatabase.recentRecipes().deleteOldRecipes()
+        }
+    }
+
+    fun getRecentRecipes(): Flow<List<RecipeUIModel>> {
+        return appDatabase.recentRecipes()
+            .getRecentRecipes()
+            .map { entities -> entities.map { it.toRecipeUIModel() } }
+    }
+
+    private fun shouldFetchNewRecipes(lastUpdateTime: Long?): Boolean {
         if (lastUpdateTime == null) return true
         val currentTime = System.currentTimeMillis()
         return (currentTime - lastUpdateTime) >= TWENTY_FOUR_HOURS
@@ -121,8 +144,10 @@ class RecipeRepository(
         appDatabase.favoriteRecipes().getFavoriteRecipe(recipeId.toString()) != null
     }
 
-    fun getFavoriteRecipes(): Flow<List<FavoriteRecipeEntity>> {
-        return appDatabase.favoriteRecipes().getFavoriteRecipes()
+    fun getFavoriteRecipes(): Flow<List<RecipeUIModel>> {
+        return appDatabase.favoriteRecipes()
+            .getFavoriteRecipes()
+            .map { entities -> entities.map { it.toRecipeUIModel() } }
     }
 
     fun autoComplete(query: String): Flow<BaseUIModel<List<String>>> {

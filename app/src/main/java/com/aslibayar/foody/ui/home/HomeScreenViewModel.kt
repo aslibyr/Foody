@@ -7,6 +7,7 @@ import com.aslibayar.data.model.RecipeUIModel
 import com.aslibayar.data.repository.RecipeRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class HomeScreenViewModel(
@@ -43,6 +44,43 @@ class HomeScreenViewModel(
         viewModelScope.launch {
             repository.getTodaysSpecialRecipes().collect { recipes ->
                 _todaysSpecialRecipes.value = recipes
+            }
+        }
+    }
+
+    fun onPullToRefresh() {
+        viewModelScope.launch {
+            try {
+                _recipeList.update { it.copy(isRefreshing = true) }
+                repository.getRandomRecipes()
+                    .collect { result ->
+                        when (result) {
+                            is BaseUIModel.Loading -> {
+                                _recipeList.update { it.copy(isLoading = true) }
+                            }
+
+                            is BaseUIModel.Success -> {
+                                _recipeList.update {
+                                    it.copy(
+                                        isRefreshing = false,
+                                        recipes = result.data,
+                                        isLoading = false,
+                                    )
+                                }
+                            }
+
+                            is BaseUIModel.Error -> {
+                                _recipeList.update {
+                                    it.copy(
+                                        isRefreshing = false,
+                                        isLoading = false
+                                    )
+                                }
+                            }
+                        }
+                    }
+            } catch (e: Exception) {
+                _recipeList.update { it.copy(isRefreshing = false) }
             }
         }
     }

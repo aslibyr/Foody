@@ -4,13 +4,10 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aslibayar.data.model.BaseUIModel
-import com.aslibayar.data.model.RecipeUIModel
 import com.aslibayar.data.repository.RecipeRepository
 import com.aslibayar.foody.ListingRoute
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -24,136 +21,92 @@ class ListingViewModel(
     )
 
     private companion object {
-        const val ERROR_MESSAGE = "Bir hata oluştu"
+        const val ERROR_MESSAGE = "Error occured"
     }
 
-    private val _uiState = MutableStateFlow<ListingUIState>(
-        ListingUIState(screenType = route.screenType)
-    )
+    private val _uiState = MutableStateFlow(ListingUIState(screenType = route.screenType))
     val uiState = _uiState.asStateFlow()
 
-    private val _effect = Channel<ListingEffect>()
-    val effect = _effect.receiveAsFlow()
-
     init {
-        getRecipeList()
-        observeFavorites()
+        loadInitialData()
     }
 
-    fun onEvent(event: ListingEvent) {
-        when (event) {
-            is ListingEvent.ChangeScreenType -> {
-                _uiState.update { it.copy(screenType = event.screenType) }
-                onEvent(ListingEvent.GetRecipes)
-            }
-
-            is ListingEvent.GetRecipes -> {
-                getRecipeList()
-            }
-
-            is ListingEvent.OpenRecipeDetail -> {
-                viewModelScope.launch {
-                    _effect.send(ListingEffect.NavigateToDetail(event.recipeId))
-                }
-            }
-
-            is ListingEvent.ToggleFavorite -> {
-                viewModelScope.launch {
-                    try {
-                        if (repository.isFavorite(event.recipe.id)) {
-                            repository.removeRecipeFromFavorite(event.recipe)
-                        } else {
-                            repository.addRecipeToFavorite(event.recipe)
-                        }
-                    } catch (e: Exception) {
-                        _effect.send(ListingEffect.ShowError("Favori işlemi başarısız oldu"))
-                    }
-                }
-            }
+    private fun loadInitialData() {
+        when (route.screenType) {
+            ScreenType.FAVORITE -> observeFavorites()
+            ScreenType.RECENT -> observeRecentRecipes()
+            else -> getRecipeList()
         }
     }
 
     private fun observeFavorites() {
         viewModelScope.launch {
-            repository.getFavoriteRecipes().collect { favorites ->
-                if (route.screenType == ScreenType.FAVORITE) {
-                    _uiState.update {
-                        it.copy(
-                            recipes = favorites.map { favorite ->
-                                RecipeUIModel(
-                                    id = favorite.id,
-                                    title = favorite.title,
-                                    image = favorite.image,
-                                    isFavorite = true,
-                                    readyInMinutes = favorite.time,
-                                )
-                            }
-                        )
-                    }
+            repository.getFavoriteRecipes()
+                .collect { favorites ->
+                    _uiState.update { it.copy(recipes = favorites, isLoading = false) }
                 }
-            }
+        }
+    }
+
+    private fun observeRecentRecipes() {
+        viewModelScope.launch {
+            repository.getRecentRecipes()
+                .collect { recents ->
+                    _uiState.update { it.copy(recipes = recents, isLoading = false) }
+                }
         }
     }
 
     private fun getRecipeList() {
         viewModelScope.launch {
-            repository.getRandomRecipes().collect { result ->
-                when (result) {
-                    is BaseUIModel.Loading -> {
-                        _uiState.update { it.copy(isLoading = true) }
-                    }
-                    is BaseUIModel.Success -> {
-                        val recipesWithFavorites = result.data.map { recipe ->
-                            recipe?.id?.let {
-                                repository.isFavorite(it)
-                            }?.let {
-                                recipe.copy(
-                                    isFavorite = it
+            repository.getRandomRecipes()
+                .collect { result ->
+                    when (result) {
+                        is BaseUIModel.Loading -> _uiState.update { it.copy(isLoading = true) }
+                        is BaseUIModel.Success -> {
+                            val recipesWithFavorites = result.data.map { recipe ->
+                                recipe?.copy(isFavorite = repository.isFavorite(recipe.id))
+                            }
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    recipes = recipesWithFavorites
                                 )
                             }
                         }
-                        
-                        _uiState.update {
+
+                        is BaseUIModel.Error -> _uiState.update {
                             it.copy(
                                 isLoading = false,
-                                recipes = filterRecipes(recipesWithFavorites)
+                                errorMessage = ERROR_MESSAGE
                             )
                         }
                     }
-                    is BaseUIModel.Error -> {
-                        _uiState.update { it.copy(isLoading = false) }
-                        _effect.send(ListingEffect.ShowError(ERROR_MESSAGE))
-                    }
                 }
-            }
         }
     }
 
-    private fun filterRecipes(recipes: List<RecipeUIModel?>): List<RecipeUIModel?> {
-        return when (route.screenType) {
-            ScreenType.VEGAN -> recipes.filter { it?.vegan == true }
-            ScreenType.GLUTEN_FREE -> recipes.filter { it?.glutenFree == true }
-            ScreenType.FAVORITE -> {
-                viewModelScope.launch {
-                    repository.getFavoriteRecipes().collect { favorites ->
-                        _uiState.update {
-                            it.copy(
-                                recipes = favorites.map { favorite ->
-                                    RecipeUIModel(
-                                        id = favorite.id,
-                                        title = favorite.title,
-                                        image = favorite.image,
-                                        isFavorite = true,
-                                        readyInMinutes = favorite.time,
-                                    )
-                                }
-                            )
+    fun onPullToRefresh() {
+        viewModelScope.launch {
+            try {
+                _uiState.update { it.copy(isRefreshing = true) }
+                repository.getRandomRecipes()
+                    .collect { result ->
+                        when (result) {
+                            is BaseUIModel.Loading -> _uiState.update { it.copy(isLoading = true) }
+                            is BaseUIModel.Success -> {
+                                getRecipeList()
+                                _uiState.update { it.copy(isRefreshing = false) }
+                            }
+
+                            is BaseUIModel.Error -> {
+                                _uiState.update { it.copy(isRefreshing = false, isLoading = false) }
+                            }
                         }
                     }
-                }
-                emptyList() // Geçici olarak boş liste döndür, çünkü gerçek veriler Flow üzerinden gelecek
+            } catch (e: Exception) {
+                _uiState.update { it.copy(isRefreshing = false) }
             }
-            else -> recipes
         }
     }
 }

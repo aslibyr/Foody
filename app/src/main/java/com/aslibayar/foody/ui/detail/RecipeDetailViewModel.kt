@@ -32,8 +32,8 @@ class RecipeDetailViewModel(
     val similarRecipes = _similarRecipes.asStateFlow()
 
     init {
-        getRecipeDetail(recipeId = recipeId)
         getSimilarRecipes()
+        getRecipeDetail(recipeId)
     }
 
     private fun getRecipeDetail(recipeId: Int) {
@@ -45,6 +45,9 @@ class RecipeDetailViewModel(
                     }
 
                     is BaseUIModel.Success -> {
+                        // Detay görüntülendiğinde recent'a ekle
+                        repository.addToRecentRecipes(result.data)
+
                         val isFavorite = repository.isFavorite(recipeId)
                         _uiState.value = RecipeDetailUiState.Success(
                             recipe = result.data,

@@ -1,6 +1,5 @@
 package com.aslibayar.foody.ui.listing
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,11 +19,11 @@ import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -36,7 +35,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -47,6 +45,7 @@ import com.aslibayar.foody.R
 import com.aslibayar.foody.components.button.ListResetButton
 import com.aslibayar.foody.components.image_view.CustomImageView
 import com.aslibayar.foody.components.loading.CustomLoading
+import com.aslibayar.foody.components.pull_to_refresh.PullToRefreshBox
 import com.aslibayar.foody.components.topbar.TopBarComponent
 import com.aslibayar.foody.ui.common.EmptyScreen
 import com.aslibayar.foody.ui.theme.CustomTextStyle
@@ -54,6 +53,7 @@ import com.aslibayar.foody.ui.theme.Gray
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListingScreen(
     viewModel: ListingViewModel = koinViewModel(),
@@ -63,26 +63,16 @@ fun ListingScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val gridState = rememberLazyGridState()
     val coroutineScope = rememberCoroutineScope()
-    val context = LocalContext.current
-
     val showResetButton by remember {
         derivedStateOf {
             gridState.firstVisibleItemIndex > 0
         }
     }
-
-    LaunchedEffect(Unit) {
-        viewModel.effect.collect { effect ->
-            when (effect) {
-                is ListingEffect.ShowError -> {
-                    Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
-                }
-
-                is ListingEffect.NavigateToDetail -> {
-                    openRecipeDetailScreen(effect.recipeId)
-                }
-            }
-        }
+    val emptyScreenData = when (uiState.screenType) {
+        ScreenType.FAVORITE -> R.drawable.heart to "No Favorite Recipes Yet"
+        ScreenType.VEGAN -> R.drawable.vegan to "No Vegan Recipes Found"
+        ScreenType.GLUTEN_FREE -> R.drawable.gluten_free to "No Gluten-Free Recipes Found"
+        else -> R.drawable.search to "No Recipes Found"
     }
 
     Box(
@@ -96,57 +86,44 @@ fun ListingScreen(
                 onBackClick = onBackClick
             )
 
-            if (uiState.isLoading) {
-                CustomLoading()
-            } else if (uiState.recipes.isEmpty()) {
-                when (uiState.screenType) {
-                    ScreenType.FAVORITE -> EmptyScreen(
-                        icon = R.drawable.heart,
-                        title = "No Favorite Recipes Yet",
-                    )
-
-                    ScreenType.VEGAN -> EmptyScreen(
-                        icon = R.drawable.vegan,
-                        title = "No Vegan Recipes Found",
-                    )
-
-                    ScreenType.GLUTEN_FREE -> EmptyScreen(
-                        icon = R.drawable.gluten_free,
-                        title = "No Gluten-Free Recipes Found",
-                    )
-
-                    else -> EmptyScreen(
-                        icon = R.drawable.search,
-                        title = "No Recipes Found",
-                    )
-                }
-            } else {
-                LazyVerticalGrid(
-                    state = gridState,
-                    columns = GridCells.Fixed(2),
-                    contentPadding = PaddingValues(
-                        start = 16.dp,
-                        end = 16.dp,
-                        top = 16.dp,
-                        bottom = 80.dp
-                    ),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    items(uiState.recipes) { recipe ->
-                        recipe?.let {
-                            RecipeItem(
-                                recipe = it,
-                                onRecipeClick = { recipeId ->
-                                    viewModel.onEvent(ListingEvent.OpenRecipeDetail(recipeId))
-                                }
-                            )
+            PullToRefreshBox(
+                isRefreshing = uiState.isRefreshing,
+                onRefresh = { viewModel.onPullToRefresh() },
+                modifier = Modifier.fillMaxSize()
+            ) {
+                if (uiState.isLoading) {
+                    CustomLoading()
+                } else if (uiState.recipes.isEmpty()) {
+                    EmptyScreen(icon = emptyScreenData.first, title = emptyScreenData.second)
+                } else {
+                    LazyVerticalGrid(
+                        state = gridState,
+                        columns = GridCells.Fixed(2),
+                        contentPadding = PaddingValues(
+                            start = 16.dp,
+                            end = 16.dp,
+                            top = 16.dp,
+                            bottom = 80.dp
+                        ),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        items(uiState.recipes) { recipe ->
+                            recipe?.let {
+                                RecipeItem(
+                                    recipe = it,
+                                    onRecipeClick = { recipeId ->
+                                        openRecipeDetailScreen(recipeId)
+                                    }
+                                )
+                            }
                         }
                     }
                 }
             }
         }
+
         if (showResetButton) {
             ListResetButton {
                 coroutineScope.launch {
