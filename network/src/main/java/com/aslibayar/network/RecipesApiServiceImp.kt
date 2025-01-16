@@ -36,7 +36,7 @@ class RecipesApiServiceImp(
         safeApiCall<List<SimilarRecipeResponseItem>>(client) {
             url {
                 appendPathSegments("recipes", recipeId.toString(), "similar")
-                parameters.append("number", 10.toString())
+                parameters.append("number", 3.toString())
                 parameters.append("apiKey", BuildConfig.API_KEY)
             }
             method = HttpMethod.Get
