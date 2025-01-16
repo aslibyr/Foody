@@ -16,6 +16,7 @@ import com.aslibayar.foody.ui.detail.RecipeDetailScreen
 import com.aslibayar.foody.ui.home.HomeScreen
 import com.aslibayar.foody.ui.listing.ListingScreen
 import com.aslibayar.foody.ui.search.SearchScreen
+import com.aslibayar.network.NetworkStateHolder
 
 @Composable
 fun MainNavigation(
@@ -53,10 +54,12 @@ fun MainNavigation(
 
     ) {
         composable<HomeScreenRoute> {
-            HomeScreen(openRecipeDetailScreen = {
+            HomeScreen(
+                openRecipeDetailScreen = {
                 val route = RecipeDetailRoute(it)
                 navController.navigate(route)
             },
+                networkStateHolder = NetworkStateHolder,
                 onQuickAccessClick = {
                     val route = ListingRoute(it)
                     navController.navigate(route)

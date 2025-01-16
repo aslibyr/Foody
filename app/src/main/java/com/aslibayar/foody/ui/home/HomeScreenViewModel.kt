@@ -84,4 +84,37 @@ class HomeScreenViewModel(
             }
         }
     }
+
+    fun retryFetchingData() {
+        viewModelScope.launch {
+            _recipeList.update { it.copy(isLoading = true, isRefreshing = false) }
+
+            try {
+                repository.getRandomRecipes().collect { result ->
+                    when (result) {
+                        is BaseUIModel.Loading -> {
+                            _recipeList.update { it.copy(isLoading = true) }
+                        }
+
+                        is BaseUIModel.Success -> {
+                            _recipeList.update {
+                                it.copy(
+                                    isLoading = false,
+                                    recipes = result.data
+                                )
+                            }
+                            // Today's special'ı da yenile
+                            getTodaysSpecialRecipes()
+                        }
+
+                        is BaseUIModel.Error -> {
+                            _recipeList.update { it.copy(isLoading = false) }
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                _recipeList.update { it.copy(isLoading = false) }
+            }
+        }
+    }
 }

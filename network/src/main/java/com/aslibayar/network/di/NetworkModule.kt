@@ -2,6 +2,8 @@ package com.aslibayar.network.di
 
 
 import com.aslibayar.network.BuildConfig
+import com.aslibayar.network.ConnectivityMonitor
+import com.aslibayar.network.NetworkStateHolder
 import com.aslibayar.network.RecipesApiServiceImp
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -39,4 +41,7 @@ val provideNetworkModule = module {
             }
         }
     }
+    single { NetworkStateHolder } // NetworkStateHolder tekil bir nesne olarak tanımlanır
+    single { ConnectivityMonitor(get()) } // ConnectivityMonitor, context alarak başlatılır
+
 }

@@ -16,10 +16,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.aslibayar.foody.components.loading.CustomLoading
 import com.aslibayar.foody.components.pull_to_refresh.PullToRefreshBox
+import com.aslibayar.foody.ui.common.NetworkStatusScreen
 import com.aslibayar.foody.ui.home.components.quickaccess.QuickAccess
 import com.aslibayar.foody.ui.home.components.widget.RecipeWidget
 import com.aslibayar.foody.ui.home.components.widget.RecipeWidgetComponentModel
 import com.aslibayar.foody.ui.listing.ScreenType
+import com.aslibayar.network.NetworkStateHolder
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -27,12 +29,16 @@ import org.koin.androidx.compose.koinViewModel
 fun HomeScreen(
     viewModel: HomeScreenViewModel = koinViewModel(),
     openRecipeDetailScreen: (recipeId: Int) -> Unit,
+    networkStateHolder: NetworkStateHolder,
     onQuickAccessClick: (ScreenType) -> Unit,
 ) {
     val recipeList by viewModel.recipeList.collectAsStateWithLifecycle()
     val todaysSpecialRecipes by viewModel.todaysSpecialRecipes.collectAsStateWithLifecycle()
+    val isConnected by networkStateHolder.isConnected.collectAsStateWithLifecycle()
 
-    if (recipeList.isLoading) {
+    if (isConnected) {
+        NetworkStatusScreen { viewModel.retryFetchingData() }
+    } else if (recipeList.isLoading) {
         CustomLoading()
     } else {
         PullToRefreshBox(
