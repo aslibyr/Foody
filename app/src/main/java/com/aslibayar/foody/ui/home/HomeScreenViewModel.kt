@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.aslibayar.data.model.BaseUIModel
 import com.aslibayar.data.model.RecipeUIModel
 import com.aslibayar.data.repository.RecipeRepository
+import com.aslibayar.network.NetworkStateHolder
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -23,6 +24,17 @@ class HomeScreenViewModel(
     init {
         getRecipeList()
         getTodaysSpecialRecipes()
+        observeNetworkChanges()
+    }
+
+    private fun observeNetworkChanges() {
+        viewModelScope.launch {
+            NetworkStateHolder.isConnected.collect { isConnected ->
+                if (isConnected) {
+                    retryFetchingData()
+                }
+            }
+        }
     }
 
     private fun getRecipeList() {

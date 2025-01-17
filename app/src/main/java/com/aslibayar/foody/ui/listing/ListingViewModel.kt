@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.aslibayar.data.model.BaseUIModel
 import com.aslibayar.data.repository.RecipeRepository
 import com.aslibayar.foody.ListingRoute
+import com.aslibayar.network.NetworkStateHolder
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -29,6 +30,17 @@ class ListingViewModel(
 
     init {
         loadInitialData()
+        observeNetworkChanges()
+    }
+
+    private fun observeNetworkChanges() {
+        viewModelScope.launch {
+            NetworkStateHolder.isConnected.collect { isConnected ->
+                if (isConnected && route.screenType != ScreenType.FAVORITE && route.screenType != ScreenType.RECENT) {
+                    retryFetchingData()
+                }
+            }
+        }
     }
 
     private fun loadInitialData() {
@@ -106,6 +118,40 @@ class ListingViewModel(
                     }
             } catch (e: Exception) {
                 _uiState.update { it.copy(isRefreshing = false) }
+            }
+        }
+    }
+
+    fun retryFetchingData() {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true, isRefreshing = false) }
+
+            try {
+                repository.getRandomRecipes().collect { result ->
+                    when (result) {
+                        is BaseUIModel.Loading -> {
+                            _uiState.update { it.copy(isLoading = true) }
+                        }
+
+                        is BaseUIModel.Success -> {
+                            val recipesWithFavorites = result.data.map { recipe ->
+                                recipe?.copy(isFavorite = repository.isFavorite(recipe.id))
+                            }
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    recipes = recipesWithFavorites
+                                )
+                            }
+                        }
+
+                        is BaseUIModel.Error -> {
+                            _uiState.update { it.copy(isLoading = false) }
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                _uiState.update { it.copy(isLoading = false) }
             }
         }
     }
