@@ -43,122 +43,132 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.aslibayar.foody.components.image_view.CustomImageView
 import com.aslibayar.foody.noRippleClick
+import com.aslibayar.foody.ui.common.NetworkStatusScreen
 import com.aslibayar.foody.ui.search.components.autocomplete.AutoCompleteComponent
 import com.aslibayar.foody.ui.search.components.textfield.CustomOutlinedTextField
 import com.aslibayar.foody.ui.theme.CustomTextStyle
+import com.aslibayar.network.NetworkStateHolder
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SearchScreen(
     viewModel: SearchViewModel = koinViewModel(),
-    openRecipeDetailScreen: (recipeId: Int) -> Unit
+    openRecipeDetailScreen: (recipeId: Int) -> Unit,
+    networkStateHolder: NetworkStateHolder,
 ) {
-
+    val isConnected by networkStateHolder.isConnected.collectAsStateWithLifecycle()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var hasFocus by remember {
         mutableStateOf(false)
     }
     val focusManager = LocalFocusManager.current
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-            .noRippleClick {
-                focusManager.clearFocus()
-            }
-    ) {
-        CustomOutlinedTextField(
+    if (!isConnected) {
+        NetworkStatusScreen()
+    } else {
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(100.dp)
-                .padding(8.dp)
-                .onFocusChanged {
-                    hasFocus = it.hasFocus
-                },
-            label = "Search",
-            text = uiState.searchQuery,
-            returnText = { viewModel.updateQuery(it) },
-            onImeClicked = {
-                viewModel.searchRecipe()
-                hasFocus = false
-                focusManager.clearFocus()
-            },
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Done
-            ),
-        )
-        AnimatedVisibility(visible = uiState.autoCompleteList.isNotEmpty() && hasFocus) {
-            AutoCompleteComponent(list = uiState.autoCompleteList,
-                onTextClick = { text ->
-                    viewModel.searchRecipe(text)
+                .fillMaxSize()
+                .background(Color.White)
+                .noRippleClick {
                     focusManager.clearFocus()
+                }
+        ) {
+            CustomOutlinedTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(100.dp)
+                    .padding(8.dp)
+                    .onFocusChanged {
+                        hasFocus = it.hasFocus
+                    },
+                label = "Search",
+                text = uiState.searchQuery,
+                returnText = { viewModel.updateQuery(it) },
+                onImeClicked = {
+                    viewModel.searchRecipe()
                     hasFocus = false
-                    viewModel.updateQuery(text)
-                })
-        }
-        if (uiState.searchQuery.isEmpty()) {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.Search,
-                    contentDescription = "",
-                    Modifier.size(50.dp),
-                    tint = Color.Gray
-                )
-                Text(
-                    modifier = Modifier
-                        .padding(vertical = 8.dp),
-                    text = "Search something to start.",
-                    fontStyle = FontStyle.Italic,
-                    style = CustomTextStyle.regularBlackMedium,
-                    color = Color.Gray
-                )
+                    focusManager.clearFocus()
+                },
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Done
+                ),
+            )
+            AnimatedVisibility(visible = uiState.autoCompleteList.isNotEmpty() && hasFocus) {
+                AutoCompleteComponent(list = uiState.autoCompleteList,
+                    onTextClick = { text ->
+                        viewModel.searchRecipe(text)
+                        focusManager.clearFocus()
+                        hasFocus = false
+                        viewModel.updateQuery(text)
+                    })
             }
+            if (uiState.searchQuery.isEmpty()) {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Search,
+                        contentDescription = "",
+                        Modifier.size(50.dp),
+                        tint = Color.Gray
+                    )
+                    Text(
+                        modifier = Modifier
+                            .padding(vertical = 8.dp),
+                        text = "Search something to start.",
+                        fontStyle = FontStyle.Italic,
+                        style = CustomTextStyle.regularBlackMedium,
+                        color = Color.Gray
+                    )
+                }
 
-        } else {
-            LazyColumn(
-                Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 10.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                items(uiState.recipes) {
-                    it?.let {
-                        ListItem(
-                            modifier = Modifier
-                                .clickable {
-                                    openRecipeDetailScreen(it.id)
-                                }
-                                .shadow(elevation = 10.dp, shape = RoundedCornerShape(12.dp))
-                                .clip(RoundedCornerShape(12.dp))
-                                .fillMaxWidth(),
-                            headlineContent = {
-                                Text(
-                                    it.title,
-                                    style = CustomTextStyle.regularBlackLarge
-                                )
-                            },
-                            leadingContent = {
-                                Box(
-                                    modifier = Modifier
-                                        .wrapContentSize()
-                                        .shadow(elevation = 10.dp, shape = RoundedCornerShape(8.dp))
-                                        .clip(RoundedCornerShape(8.dp))
-                                ) {
-                                    CustomImageView(
-                                        imageUrl = it.image, modifier = Modifier
-                                            .height(80.dp)
-                                            .width(100.dp), contentScale = ContentScale.Crop
+            } else {
+                LazyColumn(
+                    Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 10.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    items(uiState.recipes) {
+                        it?.let {
+                            ListItem(
+                                modifier = Modifier
+                                    .clickable {
+                                        openRecipeDetailScreen(it.id)
+                                    }
+                                    .shadow(elevation = 10.dp, shape = RoundedCornerShape(12.dp))
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .fillMaxWidth(),
+                                headlineContent = {
+                                    Text(
+                                        it.title,
+                                        style = CustomTextStyle.regularBlackLarge
                                     )
-                                }
-                            },
-                            colors = ListItemDefaults.colors(containerColor = Color.White)
-                        )
+                                },
+                                leadingContent = {
+                                    Box(
+                                        modifier = Modifier
+                                            .wrapContentSize()
+                                            .shadow(
+                                                elevation = 10.dp,
+                                                shape = RoundedCornerShape(8.dp)
+                                            )
+                                            .clip(RoundedCornerShape(8.dp))
+                                    ) {
+                                        CustomImageView(
+                                            imageUrl = it.image, modifier = Modifier
+                                                .height(80.dp)
+                                                .width(100.dp), contentScale = ContentScale.Crop
+                                        )
+                                    }
+                                },
+                                colors = ListItemDefaults.colors(containerColor = Color.White)
+                            )
+                        }
                     }
                 }
             }

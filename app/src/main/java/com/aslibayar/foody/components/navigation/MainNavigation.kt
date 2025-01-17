@@ -56,9 +56,9 @@ fun MainNavigation(
         composable<HomeScreenRoute> {
             HomeScreen(
                 openRecipeDetailScreen = {
-                val route = RecipeDetailRoute(it)
-                navController.navigate(route)
-            },
+                    val route = RecipeDetailRoute(it)
+                    navController.navigate(route)
+                },
                 networkStateHolder = NetworkStateHolder,
                 onQuickAccessClick = {
                     val route = ListingRoute(it)
@@ -69,13 +69,16 @@ fun MainNavigation(
 
 
         composable<SearchRoute> {
-            SearchScreen(openRecipeDetailScreen = {
-                val route = RecipeDetailRoute(it)
-                navController.navigate(route)
-            })
+            SearchScreen(
+                openRecipeDetailScreen = {
+                    val route = RecipeDetailRoute(it)
+                    navController.navigate(route)
+                },
+                networkStateHolder = NetworkStateHolder,
+            )
         }
 
-        composable<ListingRoute> { route ->
+        composable<ListingRoute> {
             ListingScreen(
                 openRecipeDetailScreen = {
                     val detailRoute = RecipeDetailRoute(it)

@@ -36,8 +36,8 @@ fun HomeScreen(
     val todaysSpecialRecipes by viewModel.todaysSpecialRecipes.collectAsStateWithLifecycle()
     val isConnected by networkStateHolder.isConnected.collectAsStateWithLifecycle()
 
-    if (isConnected) {
-        NetworkStatusScreen { viewModel.retryFetchingData() }
+    if (!isConnected) {
+        NetworkStatusScreen()
     } else if (recipeList.isLoading) {
         CustomLoading()
     } else {
