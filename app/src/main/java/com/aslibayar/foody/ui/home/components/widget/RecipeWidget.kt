@@ -92,7 +92,7 @@ fun RecipeWidget(
             LazyRow(
                 Modifier.fillMaxWidth(),
             ) {
-                items(model.recipes) { recipe ->
+                items(model.recipes.take(5)) { recipe ->
                     recipe?.let {
                         RecipeWidgetItem(
                             recipe = it,
