@@ -4,10 +4,12 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 
-class ConnectivityMonitor(private val context: Context) {
+class ConnectivityMonitor(context: Context) {
 
     init {
-        // ConnectivityManager kullanarak ağ durumu dinlenir
+        // NetworkStateHolder'ı başlat
+        NetworkStateHolder.initialize(context)
+
         val connectivityManager =
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
