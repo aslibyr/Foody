@@ -29,7 +29,8 @@ fun TitleSection(recipe: RecipeDetailUIModel) {
         horizontalArrangement = Arrangement.Center
     ) {
         Text(
-            text = recipe.title,
+            text = recipe.title.lowercase().split(" ")
+                .joinToString(" ") { word -> word.replaceFirstChar { it.uppercase() } },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 8.dp, horizontal = 32.dp),

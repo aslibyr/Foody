@@ -140,7 +140,8 @@ fun RecipeWidgetItem(
                 contentScale = ContentScale.Crop
             )
             Text(
-                text = recipe.title,
+                text = recipe.title.lowercase().split(" ")
+                    .joinToString(" ") { word -> word.replaceFirstChar { it.uppercase() } },
                 style = CustomTextStyle.regularBlackMedium,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
