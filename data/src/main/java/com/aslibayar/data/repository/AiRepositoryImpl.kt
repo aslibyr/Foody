@@ -1,6 +1,5 @@
 package com.aslibayar.data.repository
 
-import android.util.Log
 import com.aslibayar.data.mapper.AIResponseMapper
 import com.aslibayar.data.model.BaseUIModel
 import com.aslibayar.network.GenAiService
@@ -12,10 +11,10 @@ class AIRepositoryImpl(
     override suspend fun suggestRecipe(ingredients: String): BaseUIModel<RecipeAIResponse> {
         return try {
             val response = aiService.suggestRecipe(ingredients)
-            val recipe = AIResponseMapper.mapAIResponseToRecipe(response)
-            BaseUIModel.Success(recipe)
+            val mappedResponse = AIResponseMapper.mapAIResponseToRecipe(response)
+            BaseUIModel.Success(mappedResponse)
         } catch (e: Exception) {
-            BaseUIModel.Error(e.message ?: "An error occurred")
+            BaseUIModel.Error(e.message ?: "Error occurred")
         }
     }
 }
