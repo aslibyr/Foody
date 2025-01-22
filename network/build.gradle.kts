@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.aslibayar.network"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 27
@@ -28,6 +28,11 @@ android {
             "String",
             "BASE_SEARCH_URL",
             "\"https://img.spoonacular.com/recipes/complexSearch?query=\""
+        )
+        buildConfigField(
+            "String",
+            "GEMINI_API_KEY",
+            "\"AIzaSyC2G188q2jYIHLdl0oOtPJIeiyophlXS2M\""
         )
     }
 
@@ -57,12 +62,14 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
+    implementation(libs.generativeai)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.android)
+    implementation(libs.ktor.client.okhttp)
     implementation(libs.ktor.client.logging)
     implementation(libs.ktor.client.content.negotiation)
     implementation(libs.ktor.serialization.kotlinx.json)
@@ -70,4 +77,5 @@ dependencies {
     implementation(libs.koin.android)
     implementation(libs.koin.core)
     implementation(libs.koin.androidx.compose)
+
 }

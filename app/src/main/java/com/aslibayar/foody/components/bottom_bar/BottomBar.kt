@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -28,6 +29,7 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.alican.multimodulemovies.components.bottom_bar.BottomBarRoute
+import com.aslibayar.foody.AIRoute
 import com.aslibayar.foody.HomeScreenRoute
 import com.aslibayar.foody.SearchRoute
 import com.aslibayar.foody.ui.theme.Orange
@@ -52,6 +54,11 @@ fun BottomBar(
             name = "Search",
             route = SearchRoute,
             icon = Icons.Filled.Search
+        ),
+        BottomBarRoute(
+            name = "AI",
+            route = AIRoute,
+            icon = Icons.Filled.Star
         ),
     )
 

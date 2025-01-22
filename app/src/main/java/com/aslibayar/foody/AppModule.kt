@@ -2,6 +2,7 @@ package com.aslibayar.foody
 
 import androidx.lifecycle.SavedStateHandle
 import com.aslibayar.data.di.provideDataModule
+import com.aslibayar.foody.ui.ai.AiChefViewModel
 import com.aslibayar.foody.ui.detail.RecipeDetailViewModel
 import com.aslibayar.foody.ui.home.HomeScreenViewModel
 import com.aslibayar.foody.ui.listing.ListingViewModel
@@ -23,4 +24,5 @@ val appModule = module {
     viewModel { (handle: SavedStateHandle) ->
         ListingViewModel(handle, get())
     }
+    viewModel { AiChefViewModel(get()) }
 }

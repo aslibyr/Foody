@@ -8,10 +8,12 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.aslibayar.foody.AIRoute
 import com.aslibayar.foody.HomeScreenRoute
 import com.aslibayar.foody.ListingRoute
 import com.aslibayar.foody.RecipeDetailRoute
 import com.aslibayar.foody.SearchRoute
+import com.aslibayar.foody.ui.ai.AiChefScreen
 import com.aslibayar.foody.ui.detail.RecipeDetailScreen
 import com.aslibayar.foody.ui.home.HomeScreen
 import com.aslibayar.foody.ui.listing.ListingScreen
@@ -76,6 +78,10 @@ fun MainNavigation(
                 },
                 networkStateHolder = NetworkStateHolder,
             )
+        }
+
+        composable<AIRoute> {
+            AiChefScreen()
         }
 
         composable<ListingRoute> {
