@@ -3,7 +3,7 @@ package com.aslibayar.network
 import com.google.ai.client.generativeai.GenerativeModel
 
 class GenAiService(
-    private val textModel: GenerativeModel,
+    textModel: GenerativeModel,
 ) {
     private val textChat = textModel.startChat()
 

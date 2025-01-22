@@ -1,11 +1,10 @@
 package com.aslibayar.network.di
 
-
 import com.aslibayar.network.BuildConfig
 import com.aslibayar.network.ConnectivityMonitor
 import com.aslibayar.network.GenAiService
 import com.aslibayar.network.NetworkStateHolder
-import com.aslibayar.network.RecipesApiServiceImp
+import com.aslibayar.network.RecipesApiService
 import com.google.ai.client.generativeai.GenerativeModel
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -20,7 +19,7 @@ import org.koin.dsl.module
 
 val provideNetworkModule = module {
     single {
-        RecipesApiServiceImp(get())
+        RecipesApiService(get())
     }
     single {
         HttpClient {

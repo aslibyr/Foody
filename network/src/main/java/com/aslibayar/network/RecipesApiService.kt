@@ -9,11 +9,10 @@ import io.ktor.client.HttpClient
 import io.ktor.http.HttpMethod
 import io.ktor.http.appendPathSegments
 
-class RecipesApiServiceImp(
+class RecipesApiService(
     private val client: HttpClient
-) : RecipesApiService {
-
-    override suspend fun getRecipeList(): NetworkResult<RandomRecipeResponse> =
+) {
+    suspend fun getRecipeList(): NetworkResult<RandomRecipeResponse> =
         safeApiCall<RandomRecipeResponse>(client) {
             url {
                 appendPathSegments("recipes", "random")
@@ -23,7 +22,7 @@ class RecipesApiServiceImp(
             method = HttpMethod.Get
         }
 
-    override suspend fun getRecipeDetail(recipeId: Int): NetworkResult<RecipeDetailResponse> =
+    suspend fun getRecipeDetail(recipeId: Int): NetworkResult<RecipeDetailResponse> =
         safeApiCall<RecipeDetailResponse>(client) {
             url {
                 appendPathSegments("recipes", recipeId.toString(), "information")
@@ -32,7 +31,7 @@ class RecipesApiServiceImp(
             method = HttpMethod.Get
         }
 
-    override suspend fun getSimilarRecipes(recipeId: Int): NetworkResult<List<SimilarRecipeResponseItem>> =
+    suspend fun getSimilarRecipes(recipeId: Int): NetworkResult<List<SimilarRecipeResponseItem>> =
         safeApiCall<List<SimilarRecipeResponseItem>>(client) {
             url {
                 appendPathSegments("recipes", recipeId.toString(), "similar")
@@ -42,7 +41,7 @@ class RecipesApiServiceImp(
             method = HttpMethod.Get
         }
 
-    override suspend fun searchRecipe(query: String): NetworkResult<SearchResponse> =
+    suspend fun searchRecipe(query: String): NetworkResult<SearchResponse> =
         safeApiCall<SearchResponse>(client) {
             url {
                 appendPathSegments("recipes", "complexSearch")
@@ -52,7 +51,7 @@ class RecipesApiServiceImp(
             method = HttpMethod.Get
         }
 
-    override suspend fun autoComplete(query: String): NetworkResult<List<AutoCompleteResponseItem>> =
+    suspend fun autoComplete(query: String): NetworkResult<List<AutoCompleteResponseItem>> =
         safeApiCall<List<AutoCompleteResponseItem>>(client) {
             url {
                 appendPathSegments("recipes", "autocomplete")
@@ -62,12 +61,4 @@ class RecipesApiServiceImp(
             }
             method = HttpMethod.Get
         }
-}
-
-interface RecipesApiService {
-    suspend fun getRecipeList(): NetworkResult<RandomRecipeResponse>
-    suspend fun getRecipeDetail(recipeId: Int): NetworkResult<RecipeDetailResponse>
-    suspend fun getSimilarRecipes(recipeId: Int): NetworkResult<List<SimilarRecipeResponseItem>>
-    suspend fun searchRecipe(query: String): NetworkResult<SearchResponse>
-    suspend fun autoComplete(query: String): NetworkResult<List<AutoCompleteResponseItem>>
 }
