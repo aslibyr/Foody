@@ -1,13 +1,16 @@
 package com.aslibayar.network
 
+import android.util.Log
 import com.google.ai.client.generativeai.GenerativeModel
 
 class GenAiService(
-    private val textModel: GenerativeModel,
+    textModel: GenerativeModel,
 ) {
     private val textChat = textModel.startChat()
 
     suspend fun suggestRecipe(ingredients: String): String {
+        Log.d("GeminiDebug", "GenAiService: suggestRecipe called with ingredients: $ingredients")
+        
         val prompt = """
             You are a professional chef. I have these ingredients: $ingredients
             What's the best recipe I can make with these ingredients?
@@ -25,9 +28,12 @@ class GenAiService(
         """.trimIndent()
 
         return try {
+            Log.d("GeminiDebug", "GenAiService: Sending prompt to Gemini")
             val response = textChat.sendMessage(prompt)
+            Log.d("GeminiDebug", "GenAiService: Received response: ${response.text}")
             response.text ?: "Sorry, I cannot suggest a recipe at the moment."
         } catch (e: Exception) {
+            Log.e("GeminiDebug", "GenAiService: Error", e)
             "An error occurred: ${e.message}"
         }
     }

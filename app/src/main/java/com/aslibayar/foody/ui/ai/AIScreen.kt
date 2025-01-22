@@ -2,7 +2,6 @@ package com.aslibayar.foody.ui.ai
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -108,47 +107,6 @@ private fun RecipeCard(
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
-
-            // Cooking Info
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = "⏱️ ${recipe.cookingTime}",
-                    style = MaterialTheme.typography.bodyMedium
-                )
-                Text(
-                    text = "👥 ${recipe.servings}",
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
-
-            // Ingredients
-            Text(
-                text = "Ingredients",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold
-            )
-            recipe.ingredients.forEach { ingredient ->
-                Text(
-                    text = "• $ingredient",
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
-
-            // Instructions
-            Text(
-                text = "Instructions",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold
-            )
-            recipe.instructions.forEachIndexed { index, instruction ->
-                Text(
-                    text = "${index + 1}. $instruction",
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
         }
     }
 }
