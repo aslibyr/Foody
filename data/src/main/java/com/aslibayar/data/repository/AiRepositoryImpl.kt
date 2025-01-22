@@ -1,6 +1,7 @@
 package com.aslibayar.data.repository
 
-import AIResponseMapper
+import android.util.Log
+import com.aslibayar.data.mapper.AIResponseMapper
 import com.aslibayar.data.model.BaseUIModel
 import com.aslibayar.network.GenAiService
 import com.aslibayar.network.response.RecipeAIResponse
