@@ -5,14 +5,14 @@ import com.aslibayar.data.model.BaseUIModel
 import com.aslibayar.network.GenAiService
 import com.aslibayar.network.response.RecipeAIResponse
 
-interface AIRepository {
-    suspend fun suggestRecipe(ingredients: String): BaseUIModel<RecipeAIResponse>
-}
+//interface AIRepository {
+//    suspend fun suggestRecipe(ingredients: String): BaseUIModel<RecipeAIResponse>
+//}
 
 class AIRepositoryImpl(
     private val aiService: GenAiService
-) : AIRepository {
-    override suspend fun suggestRecipe(ingredients: String): BaseUIModel<RecipeAIResponse> {
+) {
+    suspend fun suggestRecipe(ingredients: String): BaseUIModel<RecipeAIResponse> {
         return try {
             val response = aiService.suggestRecipe(ingredients)
             val recipe = AIResponseMapper.mapAIResponseToRecipe(response)

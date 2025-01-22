@@ -6,6 +6,7 @@ import com.aslibayar.network.ConnectivityMonitor
 import com.aslibayar.network.GenAiService
 import com.aslibayar.network.NetworkStateHolder
 import com.aslibayar.network.RecipesApiServiceImp
+import com.google.ai.client.generativeai.GenerativeModel
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
@@ -44,6 +45,12 @@ val provideNetworkModule = module {
     }
     single { NetworkStateHolder }
     single { ConnectivityMonitor(get()) }
-    single { GenAiService(get()) }
-
+    single {
+        GenAiService(
+            GenerativeModel(
+                modelName = "gemini-pro",
+                apiKey = BuildConfig.GEMINI_API_KEY
+            )
+        )
+    }
 }

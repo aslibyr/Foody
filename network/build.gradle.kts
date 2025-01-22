@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
@@ -7,6 +9,13 @@ plugins {
 android {
     namespace = "com.aslibayar.network"
     compileSdk = 35
+
+    val localProperties = Properties().apply {
+        val propsFile = rootProject.file("local.properties")
+        if (propsFile.exists()) {
+            load(propsFile.inputStream())
+        }
+    }
 
     defaultConfig {
         minSdk = 27
@@ -22,7 +31,7 @@ android {
         buildConfigField(
             "String",
             "API_KEY",
-            "\"4e09194ced60421496498ebf0655b7e7\""
+            "\"${localProperties.getProperty("API_KEY").orEmpty()}\""
         )
         buildConfigField(
             "String",
@@ -32,7 +41,7 @@ android {
         buildConfigField(
             "String",
             "GEMINI_API_KEY",
-            "\"AIzaSyC2G188q2jYIHLdl0oOtPJIeiyophlXS2M\""
+            "\"${localProperties.getProperty("GEMINI_API_KEY").orEmpty()}\""
         )
     }
 

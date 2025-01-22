@@ -3,14 +3,14 @@ package com.aslibayar.foody.ui.ai
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aslibayar.data.model.BaseUIModel
-import com.aslibayar.data.repository.AIRepository
+import com.aslibayar.data.repository.AIRepositoryImpl
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class AiChefViewModel(
-    private val repository: AIRepository
+    private val repository: AIRepositoryImpl
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AiChefUiState())

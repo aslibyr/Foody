@@ -1,7 +1,6 @@
 package com.aslibayar.data.di
 
 import com.aslibayar.data.local.AppDatabase
-import com.aslibayar.data.repository.AIRepository
 import com.aslibayar.data.repository.AIRepositoryImpl
 import com.aslibayar.data.repository.RecipeRepository
 import com.aslibayar.network.di.provideNetworkModule
@@ -12,5 +11,5 @@ val provideDataModule = module {
     includes(provideNetworkModule)
     single { RecipeRepository(get(), get()) }
     single { AppDatabase.getInstance(androidContext()) }
-    single<AIRepository> { AIRepositoryImpl(get()) }
+    single { AIRepositoryImpl(get()) }
 }
