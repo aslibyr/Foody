@@ -18,13 +18,21 @@ class AiChefViewModel(
 
     fun suggestRecipe(ingredients: String) {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, error = "") }
+            _uiState.update {
+                it.copy(
+                    isLoading = true,
+                    error = "",
+                    messages = it.messages + ChatMessage.UserMessage(ingredients)
+                )
+            }
+
             when (val result = repository.suggestRecipe(ingredients)) {
                 is BaseUIModel.Success -> {
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            recipe = result.data
+                            recipe = result.data,
+                            messages = it.messages + ChatMessage.AiMessage(result.data)
                         )
                     }
                 }
@@ -33,7 +41,8 @@ class AiChefViewModel(
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            error = result.message
+                            error = result.message,
+                            messages = it.messages + ChatMessage.ErrorMessage(result.message)
                         )
                     }
                 }

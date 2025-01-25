@@ -1,6 +1,5 @@
 package com.aslibayar.network
 
-import android.util.Log
 import com.google.ai.client.generativeai.GenerativeModel
 
 class GenAiService(
@@ -8,32 +7,43 @@ class GenAiService(
 ) {
     private val textChat = textModel.startChat()
 
-    suspend fun suggestRecipe(ingredients: String): String {
-        Log.d("GeminiDebug", "GenAiService: suggestRecipe called with ingredients: $ingredients")
-        
-        val prompt = """
-            You are a professional chef. I have these ingredients: $ingredients
-            What's the best recipe I can make with these ingredients?
-            
-            Please detect the language of my input and respond in the same language.
-            Use this format in the detected language:
-            
-            Recipe Name:
-            Ingredients:
-            Instructions:
-            Cooking Time:
-            Servings:
-            
-            Only use the ingredients I mentioned, don't suggest additional ingredients.
-        """.trimIndent()
+    suspend fun suggestRecipe(question: String): String {
+        val basePrompt = when {
+            question.equals("What should I cook today?", ignoreCase = true) -> {
+                """
+                You are a professional chef. Suggest a delicious recipe for today.
+                Ask the user what type of cuisine or dish they prefer or what do they have in kitchen.
+                Only English available.
+                Format your response as:
+                
+                Recipe Name:
+                Ingredients:
+                Instructions:
+                Cooking Time:
+                Servings:
+                """
+            }
+
+            else -> {
+                """
+                You are a professional chef. Help the user with their cooking question: $question
+                If they're asking for a recipe, format your response as:
+                
+                Recipe Name:
+                Ingredients:
+                Instructions:
+                Cooking Time:
+                Servings:
+                
+                If it's a general cooking question, provide a clear and helpful answer.
+                """
+            }
+        }.trimIndent()
 
         return try {
-            Log.d("GeminiDebug", "GenAiService: Sending prompt to Gemini")
-            val response = textChat.sendMessage(prompt)
-            Log.d("GeminiDebug", "GenAiService: Received response: ${response.text}")
-            response.text ?: "Sorry, I cannot suggest a recipe at the moment."
+            val response = textChat.sendMessage(basePrompt)
+            response.text ?: "Sorry, I cannot help with that at the moment."
         } catch (e: Exception) {
-            Log.e("GeminiDebug", "GenAiService: Error", e)
             "An error occurred: ${e.message}"
         }
     }

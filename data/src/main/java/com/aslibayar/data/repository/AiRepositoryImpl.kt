@@ -14,7 +14,16 @@ class AIRepositoryImpl(
             val mappedResponse = AIResponseMapper.mapAIResponseToRecipe(response)
             BaseUIModel.Success(mappedResponse)
         } catch (e: Exception) {
-            BaseUIModel.Error(e.message ?: "Error occurred")
+            val errorMessage = when {
+                e.message?.contains("An internal error has occurred") == true ->
+                    "AI service is currently not responding. Please try again later."
+
+                e.message?.contains("MissingFieldException") == true ->
+                    "AI service is experiencing a temporary issue. Please try again later."
+
+                else -> "An error occurred. Please try again."
+            }
+            BaseUIModel.Error(errorMessage)
         }
     }
 }

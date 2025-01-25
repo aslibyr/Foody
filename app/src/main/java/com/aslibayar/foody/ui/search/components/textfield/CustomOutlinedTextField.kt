@@ -22,6 +22,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.aslibayar.foody.ui.theme.CustomTextStyle
 import com.aslibayar.foody.ui.theme.Orange
 
 
@@ -56,7 +57,8 @@ fun CustomOutlinedTextField(
         label = {
             Text(
                 text = label,
-                fontSize = 11.sp
+                fontSize = 11.sp,
+                style = CustomTextStyle.regularBlackSmall
             )
         },
         trailingIcon = {
@@ -78,7 +80,8 @@ fun CustomOutlinedTextField(
                 Text(
                     text = it1,
                     fontSize = 11.sp,
-                    color = Color.Red
+                    color = Color.Red,
+                    style = CustomTextStyle.regularBlackMedium
                 )
             }
         },

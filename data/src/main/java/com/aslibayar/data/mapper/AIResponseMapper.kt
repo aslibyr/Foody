@@ -7,15 +7,12 @@ object AIResponseMapper {
     fun mapAIResponseToRecipe(response: String): RecipeAIResponse {
         Log.d("GeminiDebug", "Mapper: Starting to parse response: $response")
 
-        // Şimdilik tüm yanıtı recipeName'e koyalım
+        val cleanedResponse = response.replace("**", "")
+
         return RecipeAIResponse(
-            recipeName = response,
-            ingredients = emptyList(),
-            instructions = emptyList(),
-            cookingTime = "",
-            servings = ""
+            recipe = cleanedResponse,
         ).also {
-            Log.d("GeminiDebug", "Mapper: Raw response in recipe name: ${it.recipeName}")
+            Log.d("GeminiDebug", "Mapper: Raw response in recipe name: ${it.recipe}")
         }
     }
 }
