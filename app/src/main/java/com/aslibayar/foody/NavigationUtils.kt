@@ -10,7 +10,7 @@ object HomeScreenRoute
 object SearchRoute
 
 @Serializable
-object AIRoute
+object AIChefRoute
 
 @Serializable
 data class RecipeDetailRoute(val recipeId: Int)

@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.aslibayar.foody.AIRoute
+import com.aslibayar.foody.AIChefRoute
 import com.aslibayar.foody.HomeScreenRoute
 import com.aslibayar.foody.ListingRoute
 import com.aslibayar.foody.RecipeDetailRoute
@@ -80,7 +80,7 @@ fun MainNavigation(
             )
         }
 
-        composable<AIRoute> {
+        composable<AIChefRoute> {
             AiChefScreen()
         }
 

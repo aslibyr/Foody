@@ -1,6 +1,5 @@
 package com.aslibayar.foody.components.bottom_bar
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.Interaction
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -29,7 +28,7 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.alican.multimodulemovies.components.bottom_bar.BottomBarRoute
-import com.aslibayar.foody.AIRoute
+import com.aslibayar.foody.AIChefRoute
 import com.aslibayar.foody.HomeScreenRoute
 import com.aslibayar.foody.SearchRoute
 import com.aslibayar.foody.ui.theme.Orange
@@ -41,7 +40,6 @@ fun BottomBar(
     navController: NavController,
     isBottomBarVisible: Boolean
 ) {
-
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
     val items = listOf(
@@ -56,8 +54,8 @@ fun BottomBar(
             icon = Icons.Filled.Search
         ),
         BottomBarRoute(
-            name = "AI",
-            route = AIRoute,
+            name = "AI Chef",
+            route = AIChefRoute,
             icon = Icons.Filled.Star
         ),
     )
@@ -67,42 +65,40 @@ fun BottomBar(
             .fillMaxWidth()
             .background(Color.White)
     ) {
-        AnimatedVisibility(visible = isBottomBarVisible) {
-            NavigationBar(
-                containerColor = Color.White,
-                modifier = Modifier.height(110.dp)
-            ) {
-                items.forEach { item ->
-                    NavigationBarItem(
-                        selected = currentDestination?.hierarchy?.any { it.hasRoute(item.route::class) } == true,
-                        onClick = {
-                            navController.navigate(item.route) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
-                                launchSingleTop = true
-                                restoreState = true
+        NavigationBar(
+            containerColor = Color.White,
+            modifier = Modifier.height(110.dp)
+        ) {
+            items.forEach { item ->
+                NavigationBarItem(
+                    selected = currentDestination?.hierarchy?.any { it.hasRoute(item.route::class) } == true,
+                    onClick = {
+                        navController.navigate(item.route) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
                             }
-                        },
-                        label = {
-                            Text(
-                                text = item.name,
-                                fontSize = 10.sp,
-                            )
-                        },
-                        icon = {
-                            Icon(item.icon, contentDescription = item.name)
-                        },
-                        interactionSource = NoRippleInteractionSource,
-                        colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = Orange,
-                            selectedTextColor = Orange,
-                            unselectedIconColor = MaterialTheme.colorScheme.onBackground,
-                            unselectedTextColor = MaterialTheme.colorScheme.onBackground,
-                            indicatorColor = Color.White
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    },
+                    label = {
+                        Text(
+                            text = item.name,
+                            fontSize = 10.sp,
                         )
+                    },
+                    icon = {
+                        Icon(item.icon, contentDescription = item.name)
+                    },
+                    interactionSource = NoRippleInteractionSource,
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = Orange,
+                        selectedTextColor = Orange,
+                        unselectedIconColor = MaterialTheme.colorScheme.onBackground,
+                        unselectedTextColor = MaterialTheme.colorScheme.onBackground,
+                        indicatorColor = Color.White
                     )
-                }
+                )
             }
         }
     }
