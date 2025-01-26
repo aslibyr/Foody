@@ -3,13 +3,17 @@ package com.aslibayar.foody.ui.home
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -21,6 +25,7 @@ import com.aslibayar.foody.ui.home.components.quickaccess.QuickAccess
 import com.aslibayar.foody.ui.home.components.widget.RecipeWidget
 import com.aslibayar.foody.ui.home.components.widget.RecipeWidgetComponentModel
 import com.aslibayar.foody.ui.listing.ScreenType
+import com.aslibayar.foody.ui.theme.CustomTextStyle
 import com.aslibayar.network.NetworkStateHolder
 import org.koin.androidx.compose.koinViewModel
 
@@ -84,6 +89,16 @@ fun HomeScreen(
                     openListScreen = { onQuickAccessClick(ScreenType.GLUTEN_FREE) },
                     openRecipeDetailScreen = openRecipeDetailScreen
                 )
+
+
+                Spacer(modifier = Modifier.height(50.dp))
+                Text(
+                    text = "© 2025 Foody. All rights reserved.",
+                    style = CustomTextStyle.regularBlackSmall,
+                    color = Color.Gray,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
+                Spacer(modifier = Modifier.height(50.dp))
             }
         }
     }

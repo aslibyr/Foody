@@ -6,10 +6,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Star
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -20,6 +17,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -30,6 +29,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.alican.multimodulemovies.components.bottom_bar.BottomBarRoute
 import com.aslibayar.foody.AIChefRoute
 import com.aslibayar.foody.HomeScreenRoute
+import com.aslibayar.foody.R
 import com.aslibayar.foody.SearchRoute
 import com.aslibayar.foody.ui.theme.Orange
 import kotlinx.coroutines.flow.Flow
@@ -46,17 +46,17 @@ fun BottomBar(
         BottomBarRoute(
             name = "Home",
             route = HomeScreenRoute,
-            icon = Icons.Filled.Home
+            icon = ImageVector.vectorResource(R.drawable.food)
         ),
         BottomBarRoute(
             name = "Search",
             route = SearchRoute,
-            icon = Icons.Filled.Search
+            icon = ImageVector.vectorResource(R.drawable.search)
         ),
         BottomBarRoute(
             name = "AI Chef",
             route = AIChefRoute,
-            icon = Icons.Filled.Star
+            icon = ImageVector.vectorResource(R.drawable.chef)
         ),
     )
 
@@ -88,7 +88,7 @@ fun BottomBar(
                         )
                     },
                     icon = {
-                        Icon(item.icon, contentDescription = item.name)
+                        Icon(item.icon, contentDescription = item.name, Modifier.size(30.dp))
                     },
                     interactionSource = NoRippleInteractionSource,
                     colors = NavigationBarItemDefaults.colors(

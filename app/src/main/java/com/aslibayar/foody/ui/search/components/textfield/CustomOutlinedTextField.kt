@@ -58,7 +58,7 @@ fun CustomOutlinedTextField(
             Text(
                 text = label,
                 fontSize = 11.sp,
-                style = CustomTextStyle.regularBlackSmall
+                style = CustomTextStyle.regularBlackMedium
             )
         },
         trailingIcon = {
