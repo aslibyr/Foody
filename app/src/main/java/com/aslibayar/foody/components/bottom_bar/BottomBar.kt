@@ -1,5 +1,6 @@
 package com.aslibayar.foody.components.bottom_bar
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.Interaction
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -70,8 +71,10 @@ fun BottomBar(
             modifier = Modifier.height(110.dp)
         ) {
             items.forEach { item ->
+                val selected =
+                    currentDestination?.hierarchy?.any { it.hasRoute(item.route::class) } == true
                 NavigationBarItem(
-                    selected = currentDestination?.hierarchy?.any { it.hasRoute(item.route::class) } == true,
+                    selected = selected,
                     onClick = {
                         navController.navigate(item.route) {
                             popUpTo(navController.graph.findStartDestination().id) {
@@ -82,10 +85,19 @@ fun BottomBar(
                         }
                     },
                     label = {
-                        Text(
-                            text = item.name,
-                            fontSize = 10.sp,
-                        )
+                        androidx.compose.animation.AnimatedVisibility(
+                            visible = selected,
+                            enter = androidx.compose.animation.fadeIn() +
+                                    androidx.compose.animation.expandVertically(),
+                            exit = androidx.compose.animation.fadeOut() +
+                                    androidx.compose.animation.shrinkVertically()
+                        ) {
+                            Text(
+                                text = item.name,
+                                fontSize = 10.sp,
+                                modifier = Modifier.animateContentSize()
+                            )
+                        }
                     },
                     icon = {
                         Icon(item.icon, contentDescription = item.name, Modifier.size(30.dp))
